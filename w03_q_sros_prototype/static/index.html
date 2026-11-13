@@ -1,0 +1,1719 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Q-SROS | 품질 판정·공급 복구 통합 운영 시스템</title>
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --ink: #0f172a;
+      --ink-secondary: #334155;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --line-strong: #cbd5e1;
+      --primary: #1e3a8a;
+      --primary-hover: #172554;
+      --primary-light: #eff6ff;
+      --accent: #0284c7;
+      --success: #15803d;
+      --success-bg: #f0fdf4;
+      --warn: #b45309;
+      --warn-bg: #fffbeb;
+      --danger: #b91c1c;
+      --danger-bg: #fef2f2;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Malgun Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.45;
+      font-size: 13px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Enterprise GNB Header */
+    header {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #1e293b;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 1520px;
+      margin: 0 auto;
+      gap: 16px;
+    }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-logo {
+      background: #2563eb;
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+    .brand-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin: 0;
+      color: #f8fafc;
+      letter-spacing: -0.2px;
+    }
+    .brand-divider {
+      width: 1px;
+      height: 14px;
+      background: #334155;
+    }
+    .brand-sub {
+      margin: 0;
+      font-size: 12px;
+      color: #94a3b8;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sys-meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #cbd5e1;
+      font-weight: 500;
+    }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      display: inline-block;
+    }
+    .btn-admin {
+      background: #1e293b;
+      color: #f8fafc;
+      border: 1px solid #475569;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-admin:hover {
+      background: #334155;
+      border-color: #64748b;
+    }
+
+    /* Main Workspace Container */
+    .container {
+      max-width: 1520px;
+      margin: 0 auto;
+      padding: 16px 24px 48px;
+    }
+
+    /* Sub-header: Operational Context Bar */
+    .ops-status-bar {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px 16px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .ops-status-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .ops-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+    .scenario-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid #bfdbfe;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 12px;
+    }
+    .ops-status-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Unified Top Summary Grid: Work Queue (Left) + Executive KPIs (Right) */
+    .top-overview-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+      gap: 12px;
+      margin-bottom: 14px;
+      align-items: stretch;
+    }
+    @media (max-width: 1200px) {
+      .top-overview-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    /* Today's Work Queue Panel */
+    .today-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 0;
+    }
+    .section-header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink-secondary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .today-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-auto-rows: 1fr;
+      gap: 8px;
+      flex: 1;
+      align-items: stretch;
+    }
+    @media (max-width: 768px) {
+      .today-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    .today-item {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      padding: 8px 10px;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 0;
+      height: 64px;
+      overflow: hidden;
+    }
+    .today-item:hover {
+      background: var(--primary-light);
+      border-color: #93c5fd;
+    }
+    .today-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+      min-width: 0;
+    }
+    .today-item-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .today-item-count {
+      font-size: 15px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .today-item-sub {
+      font-size: 11px;
+      color: var(--muted);
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Executive KPI Strip */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      min-width: 0;
+      align-items: stretch;
+    }
+    @media (max-width: 768px) {
+      .kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    .kpi-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-top: 3px solid var(--primary);
+      border-radius: 6px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .kpi-card.kpi-safe { border-top-color: var(--success); }
+    .kpi-card.kpi-danger { border-top-color: var(--danger); }
+    .kpi-card.kpi-primary { border-top-color: var(--primary); }
+    .kpi-card.kpi-accent { border-top-color: var(--accent); }
+    .kpi-label {
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .kpi-value {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--ink);
+      margin-bottom: 4px;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.3px;
+    }
+    .kpi-foot {
+      font-size: 11px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Module Navigation Tabs */
+    .tabs {
+      display: flex;
+      gap: 2px;
+      background: #e2e8f0;
+      padding: 4px 4px 0;
+      border-radius: 6px 6px 0 0;
+      border: 1px solid var(--line-strong);
+      border-bottom: none;
+      overflow-x: auto;
+    }
+    .tab-btn {
+      background: transparent;
+      color: var(--ink-secondary);
+      border-radius: 4px 4px 0 0;
+      padding: 9px 16px;
+      font-weight: 600;
+      font-size: 13px;
+      border: none;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+    }
+    .tab-btn:hover {
+      background: rgba(255,255,255,0.5);
+      color: var(--ink);
+    }
+    .tab-btn.active {
+      background: var(--card);
+      color: var(--primary);
+      font-weight: 700;
+      border-bottom: 2px solid var(--primary);
+    }
+    .tab-panel {
+      display: none;
+      background: var(--card);
+      border: 1px solid var(--line-strong);
+      border-radius: 0 0 6px 6px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+    .tab-panel.active {
+      display: block;
+    }
+
+    /* Cards & Panels inside Tabs */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .card:last-child {
+      margin-bottom: 0;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--line);
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .card h2 {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+    .card p.desc {
+      margin: 0 0 12px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 1024px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    }
+
+    /* Enterprise Data Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.5px;
+    }
+    th, td {
+      padding: 8px 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      background: #f8fafc;
+      font-weight: 700;
+      color: var(--ink-secondary);
+      font-size: 12px;
+      border-top: 1px solid var(--line);
+    }
+    td.num, th.num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+    tr:hover td {
+      background-color: #f8fafc;
+    }
+    tr.highlight-danger td { background: #fef2f2; }
+    tr.highlight-safe td { background: #f0fdf4; }
+    tr.highlight-warn td { background: #fffbeb; }
+
+    /* Status Badges / Pills */
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+    .pill-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid #fecaca; }
+    .pill-success { background: var(--success-bg); color: var(--success); border: 1px solid #bbf7d0; }
+    .pill-warn { background: var(--warn-bg); color: var(--warn); border: 1px solid #fde68a; }
+    .pill-info { background: var(--primary-light); color: var(--primary); border: 1px solid #bfdbfe; }
+
+    /* Info / Notice Bars */
+    .alert-box {
+      padding: 10px 12px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .alert-warn { background: var(--warn-bg); border: 1px solid #fde68a; border-left: 3px solid var(--warn); color: #78350f; }
+    .alert-danger { background: var(--danger-bg); border: 1px solid #fecaca; border-left: 3px solid var(--danger); color: #7f1d1d; }
+    .alert-success { background: var(--success-bg); border: 1px solid #bbf7d0; border-left: 3px solid var(--success); color: #14532d; }
+
+    /* Controls & Form Bars */
+    button {
+      cursor: pointer;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      padding: 7px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.12s ease;
+      font-family: inherit;
+    }
+    .btn-s1 { background: var(--primary); color: #fff; }
+    .btn-s1:hover { background: var(--primary-hover); }
+    .btn-s2 { background: #0f766e; color: #fff; }
+    .btn-s2:hover { background: #115e59; }
+    .btn-s3 { background: #b45309; color: #fff; }
+    .btn-s3:hover { background: #92400e; }
+    .btn-verify { background: #4338ca; color: #fff; }
+    .btn-verify:hover { background: #3730a3; }
+    .btn-reset { background: #f8fafc; color: var(--ink-secondary); border-color: var(--line-strong); }
+    .btn-reset:hover { background: #e2e8f0; }
+
+    .sim-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: flex-end;
+      background: #f8fafc;
+      padding: 12px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      margin-bottom: 14px;
+    }
+    .sim-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .sim-field label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--ink-secondary);
+    }
+    .sim-field select, .sim-field input {
+      padding: 6px 9px;
+      border: 1px solid var(--line-strong);
+      border-radius: 4px;
+      font-size: 12px;
+      background: #fff;
+      color: var(--ink);
+    }
+    .plan-card {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 14px;
+      background: #fff;
+    }
+    .plan-card.selected {
+      border: 2px solid var(--primary);
+      background: #f8fafc;
+    }
+    .progress-bar-bg {
+      width: 100%;
+      height: 6px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--primary);
+    }
+
+    /* Admin Drawer */
+    .admin-modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.5);
+      z-index: 9999;
+      justify-content: flex-end;
+    }
+    .admin-modal-backdrop.open {
+      display: flex;
+    }
+    .admin-drawer {
+      width: 520px;
+      max-width: 92vw;
+      height: 100vh;
+      background: #ffffff;
+      box-shadow: -4px 0 24px rgba(0,0,0,0.2);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .admin-drawer-header {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #1e293b;
+    }
+    .admin-drawer-body {
+      padding: 16px 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .admin-section {
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 14px;
+      margin-bottom: 14px;
+      background: #f8fafc;
+    }
+    .admin-section h4 {
+      margin: 0 0 10px;
+      font-size: 13px;
+      color: var(--ink);
+    }
+    .admin-btn-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .admin-btn-stack button {
+      text-align: left;
+      width: 100%;
+      line-height: 1.4;
+    }
+    code {
+      font-family: "JetBrains Mono", Consolas, monospace;
+      font-size: 11.5px;
+      background: #f1f5f9;
+      padding: 1px 4px;
+      border-radius: 3px;
+      color: #0f172a;
+    }
+  </style>
+</head>
+<body>
+  <!-- Enterprise Top Bar -->
+  <header>
+    <div class="header-top">
+      <div class="brand-group">
+        <span class="brand-logo">Q-SROS</span>
+        <h1 class="brand-title">품질 판정 · 공급 복구 통합 운영 시스템</h1>
+        <div class="brand-divider"></div>
+        <p class="brand-sub">Aurora Holdings · Corevia Cosmetics(제조) ↔ Masil Commerce(유통)</p>
+      </div>
+      <div class="header-actions">
+        <div class="sys-meta-item">
+          <span class="status-dot"></span>
+          <span>원장 동기화: 정상</span>
+        </div>
+        <div class="sys-meta-item">
+          기준일: <strong id="asof-date" style="color:#fff;">2026-07-01</strong>
+        </div>
+        <div class="sys-meta-item">
+          결재 정책: 품질위 · 영업임원 · SCM (HITL)
+        </div>
+        <button class="btn-admin" onclick="toggleAdminModal(true)">
+          ⚙️ 시나리오 · 관리자 도구
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <!-- Operational Context & Quick Action Bar -->
+    <div class="ops-status-bar">
+      <div class="ops-status-left">
+        <span class="ops-label">운영 상태</span>
+        <span class="scenario-status-pill" id="scenario-title">데이터 로딩 중...</span>
+        <span id="rejudgment-badge" class="pill pill-info" style="cursor:pointer;" onclick="switchTabByIndex('tab6', 5)">실시간 재판단 대기</span>
+      </div>
+      <div class="ops-status-right">
+        <button class="btn-reset" onclick="switchTabByIndex('tab6', 5)">
+          ⚡ 조건 변경 · AI 코파일럿 워크벤치
+        </button>
+        <button class="btn-reset" onclick="fetchState()">
+          ↻ 현황 새로고침
+        </button>
+      </div>
+    </div>
+
+    <!-- Top Summary Row: Today's Work Queue (Left) + Executive KPIs (Right) -->
+    <div class="top-overview-grid">
+      <!-- 오늘 처리할 업무 큐 -->
+      <div class="today-card">
+        <div class="section-header-bar">
+          <h2 class="section-title">오늘 처리할 업무 (Operational Work Queue)</h2>
+          <span style="font-size:11px; color:var(--muted);">클릭 시 해당 모듈로 이동</span>
+        </div>
+        <div class="today-grid">
+          <div class="today-item" onclick="switchTabByIndex('tab1', 0)">
+            <div class="today-item-top">
+              <span class="today-item-label">미판정 클레임</span>
+              <span class="today-item-count" id="today-unconfirmed-cnt" style="color:var(--warn);">-건</span>
+            </div>
+            <div class="today-item-sub" id="today-unconfirmed-sub">예비검사 소명·원인 조사</div>
+          </div>
+          <div class="today-item" onclick="switchTabByIndex('tab4', 3)">
+            <div class="today-item-top">
+              <span class="today-item-label">결재 대기</span>
+              <span class="today-item-count" id="today-approval-cnt" style="color:var(--danger);">-건</span>
+            </div>
+            <div class="today-item-sub" id="today-approval-sub">권한별 의결·재상신 대기</div>
+          </div>
+          <div class="today-item" onclick="switchTabByIndex('tab2', 1)">
+            <div class="today-item-top">
+              <span class="today-item-label">원장 대조 요청</span>
+              <span class="today-item-count" id="today-verify-cnt" style="color:var(--primary);">-건</span>
+            </div>
+            <div class="today-item-sub" id="today-verify-sub">SBL 출하누락 대조</div>
+          </div>
+          <div class="today-item" onclick="switchTabByIndex('tab5', 4)">
+            <div class="today-item-top">
+              <span class="today-item-label">금일 처리 완료</span>
+              <span class="today-item-count" id="today-completed-cnt" style="color:var(--success);">-건</span>
+            </div>
+            <div class="today-item-sub" id="today-completed-sub">감사 로그 기록 완료</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 핵심 운영 KPI 4종 -->
+      <div class="kpi-grid">
+        <div class="kpi-card kpi-safe">
+          <div class="kpi-label">과잉 회수 차단 물량 (정상 배치 보호)</div>
+          <div class="kpi-value" id="kpi-saved-qty" style="color:var(--success);">-</div>
+          <div class="kpi-foot" id="kpi-saved-foot">동일 원료 로트 내 합격 배치 제외</div>
+        </div>
+        <div class="kpi-card kpi-danger">
+          <div class="kpi-label">회수 확정 배치 및 복구 대상 수량</div>
+          <div class="kpi-value" id="kpi-recall-qty" style="color:var(--danger);">-</div>
+          <div class="kpi-foot" id="kpi-recall-foot">불량률 10% 이상 배치 기준</div>
+        </div>
+        <div class="kpi-card kpi-primary">
+          <div class="kpi-label">1위 고객(C-101) 초도 복구 납기</div>
+          <div class="kpi-value" id="kpi-c101-lead" style="color:var(--primary);">-</div>
+          <div class="kpi-foot" id="kpi-c101-foot">목표 납기: 12영업일 이내</div>
+        </div>
+        <div class="kpi-card kpi-accent">
+          <div class="kpi-label">계열사(Masil) 주력 SKU 재고 상태</div>
+          <div class="kpi-value" id="kpi-masil-status">-</div>
+          <div class="kpi-foot" id="kpi-masil-foot">더마 4대 SKU 안전재고 연동</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Operational Module Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('tab1', this)">배치 품질 판정 (QC Triage)</button>
+      <button class="tab-btn" onclick="switchTab('tab2', this)">출하·클레임 원장 대사 (Traceability)</button>
+      <button class="tab-btn" onclick="switchTab('tab3', this)">공급 복구·생산 계획 (SCM & APS)</button>
+      <button class="tab-btn" onclick="switchTab('tab4', this)">전자결재·승인 관리 (Governance)</button>
+      <button class="tab-btn" onclick="switchTab('tab5', this)">작업 티켓·감사 이력 (Tasks & Audit)</button>
+      <button class="tab-btn" onclick="switchTab('tab6', this)">조건 변경·AI 코파일럿 (Re-Judgment & AI)</button>
+    </div>
+
+    <!-- TAB 1: 배치 품질 판정 -->
+    <div id="tab1" class="tab-panel active">
+      <div class="alert-box alert-warn">
+        <strong>[판정 기준: 품질관리규정(quality_policy_cv) 제3조]</strong>
+        외부 미확정 보도나 단순 예비검사 보류·미확정 클레임(<code>defect_confirmed=False</code>, 101건 991 EA)만으로는 전면 회수를 단행하지 않습니다.
+        회수 단위는 <strong>생산 배치(<code>batch_id</code>)</strong>이며, <strong>확정 불량률 ≥ 10%</strong>인 배치만 회수 의결로 이관하고 나머지는 원인 조사 트랙으로 분리합니다.
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <h2>원료 로트(LOT-B-2602-P) 투입 배치별 품질 판정 현황</h2>
+            <span class="pill pill-info">투입 배치: 4건</span>
+          </div>
+          <p class="desc">동일 보류 원료(<code>LOT-B-2602-P</code>, 입고 02-06 / 검사 02-09)가 투입된 4개 생산 배치의 확정 클레임 및 불량률 판정 결과입니다.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>배치 번호</th>
+                <th>생산일자</th>
+                <th>공정 QC</th>
+                <th class="num">생산 수량</th>
+                <th class="num">출하 수량(SBL)</th>
+                <th class="num">확정 클레임</th>
+                <th class="num">확정 불량률</th>
+                <th>판정 상태</th>
+              </tr>
+            </thead>
+            <tbody id="lot-batches-tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>전체 품질 클레임(165건) 분류 및 처분 트랙</h2>
+            <span class="pill pill-success">과잉회수 방지 필터 적용</span>
+          </div>
+          <p class="desc">클레임 확정 여부와 배치별 불량률 임계치(10%)를 기준으로 즉시 회수 대상과 조사·CS 종결 대상을 분리합니다.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>처분 트랙 구분</th>
+                <th class="num">클레임 건수</th>
+                <th class="num">클레임 수량</th>
+                <th class="num">연관 배치 출하량</th>
+                <th>후속 업무 프로세스</th>
+              </tr>
+            </thead>
+            <tbody id="triage-funnel-tbody"></tbody>
+          </table>
+          <div id="lot-alert-box" class="alert-box alert-danger" style="margin-top:12px; margin-bottom:0;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: 출하-클레임 원장 대사 -->
+    <div id="tab2" class="tab-panel">
+      <div class="card">
+        <div class="card-header">
+          <h2>회수 대상 배치(B-02-2602-01, 2603-01) 고객사별 3-Tier 분류 및 수주 추이</h2>
+          <span class="pill pill-info">생산 ↔ 품질출하(SBL) ↔ 매출출하(SH) ↔ 클레임(QC) 교차 대사</span>
+        </div>
+        <p class="desc">
+          출하 원장과 확정 클레임, 최근 3개월 수주 추이를 대조하여 <strong>Tier 1(즉시 복구)</strong>, <strong>Tier 2(출하식별자 누락 역추적)</strong>, <strong>Tier 3(예방적 창고 실사)</strong>로 분류합니다.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>고객사 (매출비중)</th>
+              <th>대응 등급 (Tier)</th>
+              <th class="num">B-2602-01<br/>출하 / 클레임</th>
+              <th class="num">B-2603-01<br/>출하 / 클레임</th>
+              <th class="num">2개 배치 합계<br/>출하 / 확정클레임</th>
+              <th class="num">유효 회수·복구<br/>산입 물량</th>
+              <th class="num">PL-02 수주 추이<br/>(26.03 → 26.06)</th>
+              <th>원장 정합성 및 조치 상태</th>
+            </tr>
+          </thead>
+          <tbody id="customer-tiers-tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>출하 식별자 누락(C-105 더뷰티클럽) 물량 보존 대사 및 재무 출하(SH) 후보 원장</h2>
+          <button class="btn-verify" style="padding:4px 10px; font-size:11px;" onclick="triggerAction('VERIFY_C105_MAPPING')">
+            물류팀 SH 원장 대조 확정 처리
+          </button>
+        </div>
+        <p class="desc">
+          품질 출하(<code>shipment_batch_link_cv</code>) 기록이 누락된 <code>C-105</code> 확정 클레임(<code>11,765 EA</code>)에 대해 생산-출하 미매핑 차액과 재무 출하(<code>sales_shipments_cv</code>) 원장을 교차 검증합니다.
+        </p>
+        <div class="grid-2">
+          <div>
+            <div id="c105-gap-summary" class="alert-box alert-warn" style="margin-bottom:0;"></div>
+          </div>
+          <div>
+            <table>
+              <thead>
+                <tr>
+                  <th>재무출하 번호 (SH)</th>
+                  <th>수주 번호 (SO)</th>
+                  <th>출하일자</th>
+                  <th class="num">출하 수량 (EA)</th>
+                  <th class="num">출하 금액 (KRW)</th>
+                </tr>
+              </thead>
+              <tbody id="c105-sh-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: 공급 복구·생산 계획 시뮬레이터 -->
+    <div id="tab3" class="tab-panel">
+      <div class="card">
+        <div class="card-header">
+          <h2>다부서 제약 연동 공급 복구 계획 시뮬레이터 (APS)</h2>
+          <span class="pill pill-info">생산(F1 라인 가동률) · 영업(고객 납기) · 유통(Masil 재고커버) 동시 산출</span>
+        </div>
+        <p class="desc">
+          복구 대안 및 라인 전환 물량 설정 시 고객사별 출하 완료 예정일, F1 공장 라인별 가동률, 계열사 Masil 더마 SKU의 재고 커버(주)가 연동 계산됩니다.
+        </p>
+
+        <div class="sim-controls">
+          <div class="sim-field">
+            <label>공급 복구 운영 대안</label>
+            <select id="sim-plan-select">
+              <option value="PLAN_A">대안 A: L-02 여유분 단독 100% 현물 재생산</option>
+              <option value="PLAN_B">대안 B: B2B 100% 최우선 배정 (Masil 물량 차출)</option>
+              <option value="PLAN_C" selected>대안 C: 혼합 보상(현물+크레딧) + F1 L-01 전환 + Masil 보호 (권장)</option>
+            </select>
+          </div>
+          <div class="sim-field">
+            <label>기본 현물 교체 비율</label>
+            <select id="sim-phys-ratio">
+              <option value="0.50">50% 현물 / 50% 크레딧</option>
+              <option value="0.60" selected>60% 현물 / 40% 크레딧 (핵심고객 65%)</option>
+              <option value="0.80">80% 현물 / 20% 크레딧</option>
+              <option value="1.00">100% 전량 현물 교체</option>
+            </select>
+          </div>
+          <div class="sim-field">
+            <label>F1 L-01(기초) 전환 물량 (여유 16,812)</label>
+            <input type="number" id="sim-l01-qty" value="12000" step="1000" min="0" max="16812" />
+          </div>
+          <div class="sim-field">
+            <label>F1 L-03(색조) 전환 물량 (여유 24,420)</label>
+            <input type="number" id="sim-l03-qty" value="0" step="1000" min="0" max="24420" />
+          </div>
+          <div class="sim-field">
+            <label>C-105 예비물량 산입 여부</label>
+            <select id="sim-c105-inc">
+              <option value="true" selected>포함 (11,765 EA 가배정)</option>
+              <option value="false">제외 (매핑 확정 전 보류)</option>
+            </select>
+          </div>
+          <button class="btn-s1" onclick="applySimParams()">시뮬레이션 실행 및 계획 반영</button>
+        </div>
+
+        <div class="grid-3" id="plan-comparison-cards" style="margin-bottom:14px;"></div>
+
+        <h3 style="margin:12px 0 8px; font-size:13px; color:var(--ink);">고객사별 공급 복구 일정 및 보상 정산 명세</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>고객사 (매출비중 / 최근수주추이)</th>
+              <th>대응 등급</th>
+              <th class="num">회수·복구 대상</th>
+              <th class="num">현물 재공급 (EA)</th>
+              <th class="num">단가 크레딧 공제 (EA)</th>
+              <th class="num">크레딧 정산액 (KRW)</th>
+              <th class="num">소요 영업일</th>
+              <th>약속 출하 완료일</th>
+              <th>이탈 리스크 판정</th>
+            </tr>
+          </thead>
+          <tbody id="sim-customer-schedule-tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <h2>Corevia F1 공장 라인별 생산 능력 및 가동률 영향</h2>
+          </div>
+          <p class="desc">더마 전용 <code>F1 L-02</code> 라인(가동률 97%, 월 여유 4,873 EA) 병목 해소를 위한 대체 라인 전환 배정 현황입니다.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>공장 / 라인</th>
+                <th>주력 제품군</th>
+                <th class="num">기존 가동률</th>
+                <th class="num">월 여유 능력</th>
+                <th class="num">복구 배정 물량(월)</th>
+                <th class="num">반영 후 가동률</th>
+              </tr>
+            </thead>
+            <tbody id="sim-lines-tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>계열사 Masil SCM 더마 SKU 재고 커버 및 발주(PO) 조정</h2>
+          </div>
+          <p class="desc"><code>PL-02</code>에 의존하는 Masil 더마 4대 SKU의 안전재고(기준 4주) 방어 및 발주 입고 일정 조정 내역입니다.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>SKU 코드 (상품명)</th>
+                <th>발주 번호(PO)</th>
+                <th class="num">현재 커버(주)</th>
+                <th class="num">2주 후 전망 커버</th>
+                <th>발주(PO) 입고 일정 조정</th>
+                <th>재고 상태 판정</th>
+              </tr>
+            </thead>
+            <tbody id="sim-masil-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: 전자결재·승인 관리 -->
+    <div id="tab4" class="tab-panel">
+      <div class="card">
+        <div class="card-header">
+          <h2>권한별 전자결재 및 승인 게이트웨이 (HITL Governance)</h2>
+          <span class="pill pill-info">전결 규정(approval_authority_policy) 기반 통제</span>
+        </div>
+        <p class="desc">
+          배치 회수 의결(품질위원회), 고객 보상 비율 및 납기 확정(영업임원), 라인 전환 및 계열사 PO 조정(생산·SCM)에 대한 승인·보류·반려 처리를 수행합니다.
+        </p>
+        <div class="grid-3" id="approval-gateways-container"></div>
+      </div>
+    </div>
+
+    <!-- TAB 5: 작업 티켓·감사 이력 -->
+    <div id="tab5" class="tab-panel">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <h2>부서별 후속 실행 작업 티켓 (Action Tasks)</h2>
+          </div>
+          <p class="desc">판정 및 결재 상태 변경에 따라 품질·물류·생산·영업·Masil SCM 부서에 발행된 실무 작업 목록입니다.</p>
+          <table>
+            <thead>
+              <tr>
+                <th>작업 번호</th>
+                <th>담당 부서</th>
+                <th>대상 객체</th>
+                <th>작업 지시 내용</th>
+                <th>진행 상태</th>
+              </tr>
+            </thead>
+            <tbody id="tasks-tbody"></tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>시스템 상태 변경 감사 로그 (Audit Trail)</h2>
+          </div>
+          <p class="desc">조건 변경, 시뮬레이션, 결재 처리에 따른 시스템 상태(Before → After) 이력입니다 (<code>runtime_state.json</code> 기록).</p>
+          <table>
+            <thead>
+              <tr>
+                <th>일시</th>
+                <th>처리 주체</th>
+                <th>실행 이벤트</th>
+                <th>상태 변경 명세 (State Diff)</th>
+              </tr>
+            </thead>
+            <tbody id="audit-logs-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>연동 데이터 원장 및 계보 현황 (Data Lineage)</h2>
+          <span class="pill pill-success">원본 데이터 읽기 전용 보호</span>
+        </div>
+        <p class="desc">시스템에 연동된 원본 원장 파일 및 주요 조인 키(Key) 구성 현황입니다.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>원장 파일명</th>
+              <th>데이터 구분</th>
+              <th class="num">레코드 수</th>
+              <th>주요 식별·연결 키</th>
+              <th>시스템 내 활용 용도</th>
+            </tr>
+          </thead>
+          <tbody id="lineage-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 6: 실시간 조건 변경 & AI 코파일럿 -->
+    <div id="tab6" class="tab-panel">
+      <div class="card">
+        <div class="card-header">
+          <h2>실시간 품질·공급 조건 변경 및 판정 정정 관제 (Dynamic Re-Judgment)</h2>
+          <span class="pill pill-info">수리 최적화 · 결재 상태 자동 재검증 연동</span>
+        </div>
+        <p class="desc">
+          현장 클레임 수치 정정(10% 임계치 재평가), 창고 실사 회신, 설비 가용 한도, 유통 수요 변동 입력 시 배치 회수 범위와 라인 전환 물량을 재산출하고 기승인 부서의 재검토 여부를 판정합니다.
+        </p>
+
+        <div class="sim-controls">
+          <div class="sim-field">
+            <label>B-02-2603-01 클레임 정정 (EA)</label>
+            <input type="number" id="dyn-b2603-delta" value="0" step="500" style="width:130px;" title="음수 입력 시 오판 차감 (-3000 이하 시 10% 미만으로 회수 해제)" />
+          </div>
+          <div class="sim-field">
+            <label>B-02-2602-03 신규 클레임 (EA)</label>
+            <input type="number" id="dyn-b260203-delta" value="0" step="1000" min="0" style="width:130px;" title="+16,200 이상 입력 시 불량률 10% 돌파하여 회수 편입" />
+          </div>
+          <div class="sim-field">
+            <label>C-103 창고 실사 미판매분 (EA)</label>
+            <input type="number" id="dyn-c103-audit" value="0" step="1000" min="0" max="59584" style="width:130px;" />
+          </div>
+          <div class="sim-field">
+            <label>F1 L-01 최대 전환 한도 (EA/월)</label>
+            <input type="number" id="dyn-l01-limit" value="16812" step="1000" min="0" max="16812" style="width:135px;" />
+          </div>
+          <div class="sim-field">
+            <label>Masil 주간 수요 변동률 (%)</label>
+            <input type="number" id="dyn-masil-surge" value="0" step="5" min="-30" max="100" style="width:110px;" />
+          </div>
+          <div class="sim-field">
+            <label>C-101 보상 조건</label>
+            <select id="dyn-c101-force">
+              <option value="false">기본 (65% 현물 + 35% 크레딧)</option>
+              <option value="true">영업임원 반려 (100% 전량 현물)</option>
+            </select>
+          </div>
+          <button class="btn-s1" onclick="applyCustomDynamicCondition()">
+            조건 변경 반영 및 재판단 실행
+          </button>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <h3 style="margin:0 0 8px; font-size:13px; color:var(--ink);">조건 변경 전·후 핵심 지표 비교 (Before → After)</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>관리 지표</th>
+                  <th class="num">변경 전 (Before)</th>
+                  <th class="num">재판단 후 (After)</th>
+                  <th>변화 여부</th>
+                </tr>
+              </thead>
+              <tbody id="rejudgment-diff-tbody"></tbody>
+            </table>
+          </div>
+          <div>
+            <h3 style="margin:0 0 8px; font-size:13px; color:var(--ink);">재판단 사유 및 재검증 대상 부서</h3>
+            <div id="rejudgment-reasoning-box" class="alert-box alert-warn" style="margin-bottom:10px;"></div>
+            <div id="rejudgment-depts-box" style="font-size:12px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h2>AI 운영 코파일럿 — 현장 메시지 조건 파싱 및 공식 문서 자동 생성</h2>
+          <span id="llm-status-badge" class="pill pill-success">LLM 연동 확인 중...</span>
+        </div>
+        <p class="desc">
+          현업 메신저·이메일·회의록 문장을 입력하면 자연어에서 조건 변경 파라미터를 추출해 엔진을 재실행하고, 산출된 수치를 근거로 부서별 공식 문서를 작성합니다.
+        </p>
+
+        <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:stretch; margin-bottom:12px;">
+          <input
+            type="text"
+            id="nl-copilot-input"
+            placeholder="현장 상황이나 지시사항을 입력하세요 (예: C-101은 전량 현물로 배정하고 L-01 한도는 8000개로 줄여줘)"
+            style="flex:1; min-width:280px; padding:8px 12px; border:1px solid var(--line-strong); border-radius:4px; font-size:12.5px;"
+          />
+          <select id="nl-doc-type" style="padding:7px 10px; border:1px solid var(--line-strong); border-radius:4px; font-size:12px; font-weight:600;">
+            <option value="AUTO">문서 유형: 자동 감지 (운영 브리핑)</option>
+            <option value="QUALITY_COMMITTEE">품질위원회 회수 의결 상신서</option>
+            <option value="C101_EMAIL">C-101 바이어 납기 협상 서한</option>
+            <option value="MASIL_SCM_MEMO">Masil SCM · 생산 라인 전환 협조전</option>
+          </select>
+          <button class="btn-s2" id="btn-nl-run" onclick="runNLCopilot()">
+            자연어 조건 반영 및 문서 생성
+          </button>
+        </div>
+
+        <div id="nl-copilot-result-box" style="display:none; background:#f8fafc; border:1px solid var(--line-strong); border-left:4px solid #0f766e; border-radius:4px; padding:12px 14px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+            <strong id="nl-result-header" style="color:#0f766e; font-size:12.5px;">AI 코파일럿 생성 문서</strong>
+            <span id="nl-parsed-pills" style="font-size:11px;"></span>
+          </div>
+          <pre id="nl-result-text" style="margin:0; white-space:pre-wrap; font-family:inherit; font-size:12.5px; line-height:1.55; color:var(--ink);"></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 관리자 도구 드로어 (시나리오 시연 · 동적 프리셋 · 코파일럿 예시) -->
+  <div id="admin-modal-backdrop" class="admin-modal-backdrop" onclick="if(event.target===this) toggleAdminModal(false)">
+    <div class="admin-drawer">
+      <div class="admin-drawer-header">
+        <div>
+          <strong style="font-size:14px;">⚙️ 시나리오 · 관리자 제어 도구</strong>
+          <div style="font-size:11px; color:#94a3b8; margin-top:2px;">운영 시나리오 전환, 조건 변경 실험 프리셋 및 데이터 초기화</div>
+        </div>
+        <button class="btn-reset" style="padding:4px 10px; font-size:11px;" onclick="toggleAdminModal(false)">✕ 닫기</button>
+      </div>
+      <div class="admin-drawer-body">
+        <div class="admin-section">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <h4 style="margin:0;">1. 표준 운영 시나리오 실행 및 초기화</h4>
+            <button class="btn-reset" style="font-size:11px; padding:4px 8px;" onclick="triggerAction('RESET'); toggleAdminModal(false);">↺ 초기 상태(2026-07-01) 리셋</button>
+          </div>
+          <div class="admin-btn-stack">
+            <button class="btn-s1" onclick="triggerAction('RUN_SCENARIO_1_NORMAL'); toggleAdminModal(false);">
+              [시나리오 1: 기본 운영] 정밀 회수 판정 + 혼합 복구(Plan C) 승인·일정 확정
+            </button>
+            <button class="btn-s2" onclick="triggerAction('RUN_SCENARIO_2_CHANGE'); toggleAdminModal(false);">
+              [시나리오 2: 조건 변경] C-103 창고 미판매분(18,500 EA) 실사 반영 → L-03 전환·Masil 순연
+            </button>
+            <button class="btn-s3" onclick="triggerAction('RUN_SCENARIO_3_EXCEPTION'); toggleAdminModal(false);">
+              [시나리오 3: 예외·반려] C-105 출하누락 보류 + 영업임원 'C-101 크레딧 반려(100% 현물)' 재상신
+            </button>
+            <button class="btn-verify" onclick="triggerAction('VERIFY_C105_MAPPING'); toggleAdminModal(false);">
+              [외부 회신 반영] 물류팀 C-105 SH 매출원장 대조 확정 (Tier 2 보류 → Tier 1 전환)
+            </button>
+          </div>
+        </div>
+
+        <div class="admin-section">
+          <h4>2. 실시간 조건 변경 · 판정 정정 프리셋</h4>
+          <div class="admin-btn-stack">
+            <button class="btn-s2" style="background:#1e40af;" onclick="runDynamicPreset('DOWNWARD_CLAIM'); toggleAdminModal(false); switchTabByIndex('tab6', 5);">
+              [판정 정정 A] B-02-2603-01 오판 클레임 -3,500 EA 차감 (불량률 11.59% → 9.41% 회수 해제)
+            </button>
+            <button class="btn-s3" style="background:#991b1b;" onclick="runDynamicPreset('NEW_BATCH_RECALL'); toggleAdminModal(false); switchTabByIndex('tab6', 5);">
+              [신규 편입 B] 합격 배치 B-02-2602-03 확정 클레임 +17,000 EA 유입 (10.52% ≥ 10% 회수 편입)
+            </button>
+            <button class="btn-verify" style="background:#854d0e;" onclick="runDynamicPreset('FACILITY_MASIL_SHOCK'); toggleAdminModal(false); switchTabByIndex('tab6', 5);">
+              [복합 제약 C] F1 L-01 점검(한도 6,000 EA) + Masil 수요 +25% 급증 → L-03 대체 역산
+            </button>
+          </div>
+        </div>
+
+        <div class="admin-section" style="margin-bottom:0;">
+          <h4>3. AI 코파일럿 현장 메시지 예시</h4>
+          <div class="admin-btn-stack">
+            <button class="btn-reset" onclick="toggleAdminModal(false); switchTabByIndex('tab6', 5); fillSampleNL(1);">
+              예시 1: "B-02-2603-01 배치에서 오판 클레임 3,500개가 취소됐어. 품질위원회 의결서 다시 써줘."
+            </button>
+            <button class="btn-reset" onclick="toggleAdminModal(false); switchTabByIndex('tab6', 5); fillSampleNL(2);">
+              예시 2: "올리브뷰티(C-101)가 크레딧 거부하고 100% 현물 요구함. C-103 실사에서 18,500개 나왔어. 바이어 서한 작성해줘."
+            </button>
+            <button class="btn-reset" onclick="toggleAdminModal(false); switchTabByIndex('tab6', 5); fillSampleNL(3);">
+              예시 3: "F1 L-01 라인 점검이라 한도가 6,000개로 줄었고 마실 수요가 25% 급증했어. SCM 협조전 만들어줘."
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentData = null;
+
+    function toggleAdminModal(open) {
+      const el = document.getElementById("admin-modal-backdrop");
+      if (!el) return;
+      if (open) el.classList.add("open");
+      else el.classList.remove("open");
+    }
+
+    function fmtNum(n) {
+      if (n === null || n === undefined || isNaN(n)) return "-";
+      return Number(n).toLocaleString("ko-KR");
+    }
+
+    function switchTab(tabId, btnEl) {
+      document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      btnEl.classList.add("active");
+    }
+
+    function switchTabByIndex(tabId, idx) {
+      const btns = document.querySelectorAll(".tab-btn");
+      if (btns[idx]) {
+        switchTab(tabId, btns[idx]);
+      }
+    }
+
+    async function fetchState() {
+      const res = await fetch("/api/state");
+      currentData = await res.json();
+      renderAll(currentData);
+    }
+
+    async function triggerAction(actionType, payload = {}) {
+      const res = await fetch("/api/action", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action_type: actionType, payload })
+      });
+      currentData = await res.json();
+      renderAll(currentData);
+    }
+
+    function applySimParams() {
+      const payload = {
+        selected_plan: document.getElementById("sim-plan-select").value,
+        physical_replace_ratio: parseFloat(document.getElementById("sim-phys-ratio").value),
+        l01_support_qty: parseInt(document.getElementById("sim-l01-qty").value, 10) || 0,
+        l03_support_qty: parseInt(document.getElementById("sim-l03-qty").value, 10) || 0,
+        include_c105_reserve: document.getElementById("sim-c105-inc").value === "true"
+      };
+      triggerAction("UPDATE_SIM_PARAMS", payload);
+    }
+
+    function runDynamicPreset(presetCode) {
+      let payload = {};
+      if (presetCode === "DOWNWARD_CLAIM") {
+        payload = {
+          preset_label: "판정 정정: B-02-2603-01 오판 클레임 -3,500 EA 차감 (불량률 9.41% < 10% → 회수 해제)",
+          b2603_01_claim_delta: -3500,
+          b2602_03_claim_delta: 0,
+          c103_unsold_audit_qty: 0,
+          c101_force_100_physical: false,
+          l01_max_limit_qty: 16812,
+          masil_demand_surge_pct: 0
+        };
+      } else if (presetCode === "NEW_BATCH_RECALL") {
+        payload = {
+          preset_label: "신규 회수 편입: 합격 배치 B-02-2602-03 확정 클레임 +17,000 EA 유입 (10.52% ≥ 10%)",
+          b2603_01_claim_delta: 0,
+          b2602_03_claim_delta: 17000,
+          c103_unsold_audit_qty: 0,
+          c101_force_100_physical: false,
+          l01_max_limit_qty: 16812,
+          masil_demand_surge_pct: 0
+        };
+      } else if (presetCode === "FACILITY_MASIL_SHOCK") {
+        payload = {
+          preset_label: "복합 제약: F1 L-01 설비점검(한도 6,000 EA) + C-103 실사(18,500 EA) + Masil 수요 +25%",
+          b2603_01_claim_delta: 0,
+          b2602_03_claim_delta: 0,
+          c103_unsold_audit_qty: 18500,
+          c101_force_100_physical: false,
+          l01_max_limit_qty: 6000,
+          masil_demand_surge_pct: 25
+        };
+      }
+      triggerAction("APPLY_DYNAMIC_CONDITION_CHANGE", payload);
+    }
+
+    function applyCustomDynamicCondition() {
+      const b2603 = parseInt(document.getElementById("dyn-b2603-delta").value, 10) || 0;
+      const b260203 = parseInt(document.getElementById("dyn-b260203-delta").value, 10) || 0;
+      const c103 = parseInt(document.getElementById("dyn-c103-audit").value, 10) || 0;
+      const l01Lim = parseInt(document.getElementById("dyn-l01-limit").value, 10);
+      const masilSurge = parseFloat(document.getElementById("dyn-masil-surge").value) || 0;
+      const c101Force = document.getElementById("dyn-c101-force").value === "true";
+
+      const payload = {
+        preset_label: `조건 변경 (2603-01:${b2603 >= 0 ? '+' : ''}${b2603}, 2602-03:+${b260203}, C-103실사:${c103}, L-01한도:${isNaN(l01Lim) ? 16812 : l01Lim}, Masil수요:${masilSurge}%)`,
+        b2603_01_claim_delta: b2603,
+        b2602_03_claim_delta: b260203,
+        c103_unsold_audit_qty: c103,
+        c101_force_100_physical: c101Force,
+        l01_max_limit_qty: isNaN(l01Lim) ? 16812 : l01Lim,
+        masil_demand_surge_pct: masilSurge
+      };
+      triggerAction("APPLY_DYNAMIC_CONDITION_CHANGE", payload);
+    }
+
+    function fillSampleNL(idx) {
+      const inputEl = document.getElementById("nl-copilot-input");
+      const docEl = document.getElementById("nl-doc-type");
+      if (idx === 1) {
+        inputEl.value = "방금 품질보증팀 재검 결과 B-02-2603-01 배치에서 오판 클레임 3,500개가 취소됐어. 품질위원회 회수 의결서 다시 써줘.";
+        docEl.value = "QUALITY_COMMITTEE";
+      } else if (idx === 2) {
+        inputEl.value = "올리브뷰티(C-101)가 크레딧 거부하고 100% 전량 현물로 달라고 요구했어. 그리고 C-103 창고 실사에서 미판매 재고 18,500개가 나왔어. C-101 바이어 협상 이메일 작성해줘.";
+        docEl.value = "C101_EMAIL";
+      } else if (idx === 3) {
+        inputEl.value = "F1 공장 L-01 라인 노즐 점검이라 전환 한도가 6,000개로 줄었고, 마실(Masil) 프로모션으로 수요가 25% 급증했어. 마실 SCM 협조문 만들어줘.";
+        docEl.value = "MASIL_SCM_MEMO";
+      }
+      runNLCopilot();
+    }
+
+    async function runNLCopilot() {
+      const userText = document.getElementById("nl-copilot-input").value.trim();
+      const docType = document.getElementById("nl-doc-type").value;
+      if (!userText) return;
+
+      const btn = document.getElementById("btn-nl-run");
+      btn.textContent = "분석 및 문서 생성 중...";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch("/api/nl_copilot", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_text: userText, doc_type: docType, apply_changes: true })
+        });
+        currentData = await res.json();
+        renderAll(currentData);
+      } finally {
+        btn.textContent = "자연어 조건 반영 및 문서 생성";
+        btn.disabled = false;
+      }
+    }
+
+    function renderAll(data) {
+      const st = data.runtime_state;
+      const tri = data.triage;
+      const sim = data.simulation;
+      const activePlan = sim.active_plan;
+
+      document.getElementById("scenario-title").textContent = st.scenario_title;
+      document.getElementById("asof-date").textContent = st.as_of_date;
+
+      if (data.llm_status) {
+        const llmBadge = document.getElementById("llm-status-badge");
+        llmBadge.textContent = `${data.llm_status.active_provider} · ${data.llm_status.model} (${data.llm_status.key_masked})`;
+      }
+      if (data.copilot_output) {
+        const box = document.getElementById("nl-copilot-result-box");
+        box.style.display = "block";
+        document.getElementById("nl-result-header").textContent =
+          `생성 결과 (${data.copilot_output.provider_used} | 문서유형: ${data.copilot_output.doc_type})`;
+        const pills = (data.copilot_output.parsed_entities || []).map(
+          e => `<span class="pill pill-info" style="margin-left:4px;">${e}</span>`
+        ).join("");
+        document.getElementById("nl-parsed-pills").innerHTML = pills;
+        document.getElementById("nl-result-text").textContent = data.copilot_output.response_text;
+      }
+
+      const adj = st.batch_claim_adjustments || {};
+      document.getElementById("dyn-b2603-delta").value = adj["B-02-2603-01"] || 0;
+      document.getElementById("dyn-b260203-delta").value = adj["B-02-2602-03"] || 0;
+      document.getElementById("dyn-c103-audit").value = st.c103_unsold_audit_qty || 0;
+      document.getElementById("dyn-l01-limit").value = st.l01_max_limit_qty !== undefined ? st.l01_max_limit_qty : 16812;
+      document.getElementById("dyn-masil-surge").value = st.masil_demand_surge_pct || 0;
+      document.getElementById("dyn-c101-force").value = String(Boolean(st.c101_force_100_physical));
+
+      const rep = st.ai_rejudgment_report;
+      if (rep && rep.before_vs_after) {
+        const badgeEl = document.getElementById("rejudgment-badge");
+        if (rep.conclusion_changed) {
+          badgeEl.className = "pill pill-danger";
+          badgeEl.textContent = `재판단: ${rep.conclusion_status} (${rep.timestamp})`;
+        } else {
+          badgeEl.className = "pill pill-success";
+          badgeEl.textContent = `판정유지: ${rep.conclusion_status} (${rep.timestamp})`;
+        }
+
+        const bva = rep.before_vs_after;
+        const rows = [
+          { label: "회수 확정 배치 (≥10%)", b: bva.recall_batches.before, a: bva.recall_batches.after },
+          { label: "총 회수·복구 수량", b: bva.total_recall_qty.before, a: bva.total_recall_qty.after },
+          { label: "현물 재공급 필요 수량", b: bva.physical_replace_qty.before, a: bva.physical_replace_qty.after },
+          { label: "F1 라인 전환 (L-01 / L-03)", b: bva.line_support.before, a: bva.line_support.after },
+          { label: "핵심고객 C-101 복구납기", b: bva.c101_lead_days.before, a: bva.c101_lead_days.after },
+          { label: "Masil 품절위험 SKU 수", b: bva.masil_stockout_cnt.before, a: bva.masil_stockout_cnt.after }
+        ];
+
+        document.getElementById("rejudgment-diff-tbody").innerHTML = rows.map(r => {
+          const changed = r.b !== r.a;
+          return `<tr class="${changed ? 'highlight-warn' : ''}">
+            <td><strong>${r.label}</strong></td>
+            <td class="num" style="color:var(--muted);">${r.b}</td>
+            <td class="num"><strong>${r.a}</strong></td>
+            <td><span class="pill ${changed ? 'pill-danger' : 'pill-success'}">${changed ? '변경됨' : '유지'}</span></td>
+          </tr>`;
+        }).join("");
+
+        document.getElementById("rejudgment-reasoning-box").innerHTML = `
+          <strong>[변경 요인: ${rep.trigger_summary}]</strong><br/>
+          ${(rep.reasoning_trace || []).map(line => `• ${line}`).join("<br/>")}
+        `;
+
+        document.getElementById("rejudgment-depts-box").innerHTML = `
+          <strong>재검증·승인 연동 대상 부서:</strong><br/>
+          ${(rep.affected_departments || []).map(d => `<span class="pill pill-info" style="margin:4px 4px 0 0; display:inline-block;">${d}</span>`).join("")}
+        `;
+      }
+
+      const tf = tri.triage_funnel;
+
+      const unconfirmedCnt = tf.unconfirmed_claims_cnt || 0;
+      document.getElementById("today-unconfirmed-cnt").textContent = `${fmtNum(unconfirmedCnt)}건`;
+      document.getElementById("today-unconfirmed-sub").textContent =
+        `미확정 ${fmtNum(tf.unconfirmed_claims_qty || 0)} EA (조사 큐)`;
+
+      const pendingApprovals = Object.values(st.approvals || {}).filter(
+        a => !String(a.status || "").includes("승인완료")
+      );
+      document.getElementById("today-approval-cnt").textContent = `${fmtNum(pendingApprovals.length)}건`;
+      document.getElementById("today-approval-sub").textContent =
+        pendingApprovals.length > 0
+          ? pendingApprovals.map(a => `${a.authority}`).join(" · ")
+          : "전 부서 결재 완료";
+
+      const tier2List = (tri.customer_tiers || []).filter(c => String(c.tier || "").startsWith("TIER_2"));
+      document.getElementById("today-verify-cnt").textContent = `${fmtNum(tier2List.length)}건`;
+      document.getElementById("today-verify-sub").textContent =
+        tier2List.length > 0
+          ? `${tier2List.map(c => c.customer_id).join(", ")} 출하원장 대조`
+          : "출하원장 대조 완료";
+
+      const completedLogs = (st.audit_logs || []);
+      document.getElementById("today-completed-cnt").textContent = `${fmtNum(completedLogs.length)}건`;
+      document.getElementById("today-completed-sub").textContent =
+        completedLogs.length > 0
+          ? `최근: ${completedLogs[0].event}`
+          : "기록된 이력 없음";
+
+      const recallBatchList = (tri.recall_batches || []).map(b => b.batch_id);
+      const recallCnt = recallBatchList.length;
+      document.getElementById("kpi-saved-qty").textContent = `${fmtNum(tf.saved_overreaction_prod_qty)} EA`;
+      document.getElementById("kpi-saved-foot").textContent =
+        `출하분 ${fmtNum(tf.saved_overreaction_ship_qty)} EA (약 ${(tf.saved_overreaction_value_krw / 100000000).toFixed(1)}억 원) 보호`;
+
+      document.getElementById("kpi-recall-qty").textContent =
+        `${recallCnt}개 배치 · ${fmtNum(activePlan.total_target_recall_qty)} EA`;
+      document.getElementById("kpi-recall-foot").textContent =
+        `${recallBatchList.join(", ") || "없음"} (현물 ${fmtNum(activePlan.total_physical_replace_qty)} EA)`;
+
+      const c101Sched = activePlan.customer_schedules.find(c => c.customer_id === "C-101");
+      if (c101Sched) {
+        document.getElementById("kpi-c101-lead").textContent =
+          `${c101Sched.lead_biz_days}영업일 (${c101Sched.promised_ship_date})`;
+        document.getElementById("kpi-c101-foot").textContent =
+          `${c101Sched.churn_status} · 현물 ${fmtNum(c101Sched.physical_replace_qty)} EA`;
+      }
+
+      const stockoutCnt = activePlan.masil_stockout_sku_cnt;
+      const masilEl = document.getElementById("kpi-masil-status");
+      if (stockoutCnt === 0) {
+        masilEl.textContent = "전 품목 정상 (결품 0)";
+        masilEl.style.color = "var(--success)";
+      } else {
+        masilEl.textContent = `${stockoutCnt}개 품목 결품 위험`;
+        masilEl.style.color = "var(--danger)";
+      }
+
+      const lotTbody = document.getElementById("lot-batches-tbody");
+      lotTbody.innerHTML = tri.lot_b2602p_batches.map(b => {
+        const rowCls = b.is_recall_target ? "highlight-danger" : "highlight-safe";
+        const pillCls = b.is_recall_target ? "pill-danger" : "pill-success";
+        return `<tr class="${rowCls}">
+          <td><strong>${b.batch_id}</strong></td>
+          <td>${b.production_date}</td>
+          <td><span class="pill ${b.qc_result === '보류' ? 'pill-warn' : 'pill-success'}">${b.qc_result}</span></td>
+          <td class="num">${fmtNum(b.produced_qty)} EA</td>
+          <td class="num">${fmtNum(b.sbl_shipped_qty)} EA</td>
+          <td class="num"><strong>${b.confirmed_claim_cnt}건 (${fmtNum(b.confirmed_defect_qty)} EA)</strong></td>
+          <td class="num"><strong>${b.defect_rate_prod_pct.toFixed(2)}%</strong><br/><small style="color:var(--muted);">출하대비 ${b.defect_rate_ship_pct.toFixed(2)}%</small></td>
+          <td><span class="pill ${pillCls}">${b.operational_status}</span></td>
+        </tr>`;
+      }).join("");
+
+      const funnelTbody = document.getElementById("triage-funnel-tbody");
+      funnelTbody.innerHTML = `
+        <tr class="highlight-danger">
+          <td><strong>1. 회수 실행 대상 (확정 & 배치불량률 ≥ 10%)</strong></td>
+          <td class="num">${fmtNum(tf.confirmed_recall_claims_cnt)}건</td>
+          <td class="num"><strong>${fmtNum(tf.confirmed_recall_claims_qty)} EA</strong></td>
+          <td class="num">299,653 EA (2개 배치)</td>
+          <td><span class="pill pill-danger">품질위원회 회수 의결 · 공급복구 연동</span></td>
+        </tr>
+        <tr class="highlight-safe">
+          <td><strong>2. 동일 원료 로트(LOT-B-2602-P) 내 정상 합격 배치</strong></td>
+          <td class="num">0건</td>
+          <td class="num">0 EA</td>
+          <td class="num"><strong>${fmtNum(tf.saved_overreaction_ship_qty)} EA (생산 ${fmtNum(tf.saved_overreaction_prod_qty)} EA)</strong></td>
+          <td><span class="pill pill-success">과잉 회수 차단 (정상 출하 유지)</span></td>
+        </tr>
+        <tr>
+          <td><strong>3. 경미 확정 클레임 (배치불량률 0.00~0.01% &lt; 10%)</strong></td>
+          <td class="num">${fmtNum(tf.confirmed_minor_claims_cnt)}건</td>
+          <td class="num">${fmtNum(tf.confirmed_minor_claims_qty)} EA</td>
+          <td class="num">개별 단발 처리</td>
+          <td><span class="pill pill-info">개별 CS 교환·보상 종결</span></td>
+        </tr>
+        <tr class="highlight-warn">
+          <td><strong>4. 예비검사 미확정 클레임 (defect_confirmed = False)</strong></td>
+          <td class="num">${fmtNum(tf.unconfirmed_claims_cnt)}건</td>
+          <td class="num">${fmtNum(tf.unconfirmed_claims_qty)} EA</td>
+          <td class="num">조사 트랙 분리</td>
+          <td><span class="pill pill-warn">원인 조사·소명 큐 (TASK-QC-001)</span></td>
+        </tr>
+      `;
+
+      const la = tri.lot_inspection_alert;
+      document.getElementById("lot-alert-box").innerHTML = `
+        <strong>[원료 선투입 통제 알림]</strong>
+        원료 로트 <code>${la.lot_id}</code>(${la.material_id}, 공급처 ${la.supplier_id}) 판정 상태: <strong>${la.inspection_result}</strong><br/>
+        • ${la.pre_receipt_issue} (입고 전 선투입 이력 확인됨)
+      `;
+
+      const tierTbody = document.getElementById("customer-tiers-tbody");
+      tierTbody.innerHTML = tri.customer_tiers.map(c => {
+        let rowCls = "";
+        let pillCls = "pill-info";
+        if (c.tier.startsWith("TIER_1")) { rowCls = "highlight-danger"; pillCls = "pill-danger"; }
+        else if (c.tier.startsWith("TIER_2")) { rowCls = "highlight-warn"; pillCls = "pill-warn"; }
+        else { rowCls = "highlight-safe"; pillCls = "pill-success"; }
+
+        const trendColor = c.so_trend_3m_pct <= -30 ? "color:var(--danger); font-weight:700;" : "color:var(--ink);";
+        return `<tr class="${rowCls}">
+          <td><strong>${c.customer_id} (${c.customer_name})</strong><br/><small style="color:var(--muted);">매출비중 ${c.revenue_share_pct}% · 단가 ${fmtNum(c.avg_unit_price_krw)}원</small></td>
+          <td><span class="pill ${pillCls}">${c.tier_label}</span></td>
+          <td class="num">${fmtNum(c.b2602_01_sbl_qty)} EA<br/><small style="color:var(--danger);">클레임 ${fmtNum(c.b2602_01_claim_qty)} EA</small></td>
+          <td class="num">${fmtNum(c.b2603_01_sbl_qty)} EA<br/><small style="color:var(--danger);">클레임 ${fmtNum(c.b2603_01_claim_qty)} EA</small></td>
+          <td class="num"><strong>${fmtNum(c.total_sbl_qty)} EA</strong><br/><strong style="color:var(--danger);">클레임 ${fmtNum(c.total_confirmed_claim_qty)} EA</strong></td>
+          <td class="num"><strong>${fmtNum(c.effective_recall_qty)} EA</strong></td>
+          <td class="num" style="${trendColor}">${fmtNum(c.so_2026_03_qty)} → ${fmtNum(c.so_2026_06_qty)} EA<br/>(${c.so_trend_3m_pct > 0 ? '+' : ''}${c.so_trend_3m_pct}%)</td>
+          <td>${c.mapping_status}</td>
+        </tr>`;
+      }).join("");
+
+      const gap = tri.c105_gap_analysis;
+      document.getElementById("c105-gap-summary").innerHTML = `
+        <strong>[C-105(더뷰티클럽) 원장 대사 결과 — 상태: ${gap.verification_status}]</strong><br/>
+        • <strong>확정 클레임 합계</strong>: <code>B-02-2602-01</code>(${fmtNum(gap.confirmed_claims_b2602_01)} EA) + <code>B-02-2603-01</code>(${fmtNum(gap.confirmed_claims_b2603_01)} EA) = <strong>${fmtNum(gap.total_confirmed_claims_qty)} EA</strong> (14건)<br/>
+        • <strong>품질 출하(SBL) 기록</strong>: <strong>${fmtNum(gap.sbl_recorded_qty)} EA</strong> (출하 식별자 누락)<br/>
+        • <strong>배치 생산량 - SBL 출하 합계 미매핑 차액</strong>: <code>4,885 EA</code> + <code>6,940 EA</code> = <strong>${fmtNum(gap.total_unmapped_batch_diff_qty)} EA</strong> (클레임 수량과 <strong>${gap.diff_vs_claim_residual_EA} EA 차이, 99.5% 일치</strong>)<br/>
+        • <strong>재무 출하(SH) 원장</strong>: 2026년 2월 <strong>${fmtNum(gap.sh_feb_2026_total_qty)} EA</strong>, 3월 <strong>${fmtNum(gap.sh_mar_2026_total_qty)} EA</strong> 출하 이력 확인
+      `;
+
+      document.getElementById("c105-sh-tbody").innerHTML = gap.sh_candidate_records.map(r => `
+        <tr>
+          <td><code>${r.shipment_id}</code></td>
+          <td><code>${r.order_id}</code></td>
+          <td>${r.ship_date}</td>
+          <td class="num">${fmtNum(r.shipped_qty)} EA</td>
+          <td class="num">${fmtNum(r.revenue_krw)} 원</td>
+        </tr>
+      `).join("");
+
+      document.getElementById("sim-plan-select").value = st.sim_params.selected_plan;
+      document.getElementById("sim-phys-ratio").value = Number(st.sim_params.physical_replace_ratio).toFixed(2);
+      document.getElementById("sim-l01-qty").value = st.sim_params.l01_support_qty;
+      document.getElementById("sim-l03-qty").value = st.sim_params.l03_support_qty;
+      document.getElementById("sim-c105-inc").value = String(st.sim_params.include_c105_reserve);
+
+      const comp = sim.comparison;
+      const planMeta = [
+        { code: "PLAN_A", title: "대안 A: L-02 단독 전량 재생산", desc: "타 라인 전환 및 크레딧 정산 미적용" },
+        { code: "PLAN_B", title: "대안 B: B2B 100% 최우선 배정", desc: "계열사(Masil) 유통 물량 차출 투입" },
+        { code: "PLAN_C", title: "대안 C: 혼합 복구 + L-01 전환 + Masil 보호", desc: "다부서 제약 균형 운영 계획 (권장)" }
+      ];
+      document.getElementById("plan-comparison-cards").innerHTML = planMeta.map(pm => {
+        const p = comp[pm.code];
+        const isSel = sim.selected_plan_code === pm.code;
+        return `<div class="plan-card ${isSel ? 'selected' : ''}">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:13px; color:var(--primary);">${pm.title}</strong>
+            ${isSel ? '<span class="pill pill-info">적용 중</span>' : ''}
+          </div>
+          <p style="margin:4px 0 8px; font-size:11.5px; color:var(--muted);">${pm.desc}</p>
+          <div style="font-size:12px; line-height:1.6;">
+            • 현물 재공급: <strong>${fmtNum(p.total_physical_replace_qty)} EA</strong> / 크레딧: <strong>${fmtNum(p.total_credit_note_qty)} EA</strong><br/>
+            • 월 가용 복구능력: <strong>${fmtNum(p.available_monthly_recovery_cap_qty)} EA/월</strong><br/>
+            • 최대 복구 소요일: <strong style="color:${p.max_recovery_lead_biz_days > 20 ? 'var(--danger)' : 'var(--success)'};">${p.max_recovery_lead_biz_days} 영업일</strong><br/>
+            • Masil 결품 위험 SKU: <strong style="color:${p.masil_stockout_sku_cnt > 0 ? 'var(--danger)' : 'var(--success)'};">${p.masil_stockout_sku_cnt}종</strong>
+          </div>
+        </div>`;
+      }).join("");
+
+      document.getElementById("sim-customer-schedule-tbody").innerHTML = activePlan.customer_schedules.map(cs => {
+        const pillCls = cs.churn_status.includes("방어성공") ? "pill-success" : (cs.churn_status.includes("위험") ? "pill-danger" : "pill-warn");
+        return `<tr>
+          <td><strong>${cs.customer_id} (${cs.customer_name})</strong><br/><small style="color:var(--muted);">매출비중 ${cs.revenue_share_pct}% · 최근수주 ${cs.so_trend_3m_pct}%</small></td>
+          <td><small>${cs.tier_label}</small></td>
+          <td class="num"><strong>${fmtNum(cs.target_recall_qty)} EA</strong></td>
+          <td class="num" style="color:var(--primary); font-weight:700;">${fmtNum(cs.physical_replace_qty)} EA</td>
+          <td class="num">${fmtNum(cs.credit_note_qty)} EA</td>
+          <td class="num">${fmtNum(cs.credit_amount_krw)} 원</td>
+          <td class="num"><strong>${cs.lead_biz_days} 영업일</strong></td>
+          <td><strong>${cs.promised_ship_date}</strong></td>
+          <td><span class="pill ${pillCls}">${cs.churn_status}</span></td>
+        </tr>`;
+      }).join("");
+
+      document.getElementById("sim-lines-tbody").innerHTML = activePlan.line_utilization_impacts.map(ln => `
+        <tr class="${ln.line_id === 'L-02' ? 'highlight-warn' : ''}">
+          <td><strong>${ln.plant_id} - ${ln.line_id}</strong></td>
+          <td>${ln.product_id}</td>
+          <td class="num">${ln.baseline_utilization_pct.toFixed(1)}%</td>
+          <td class="num">${fmtNum(ln.monthly_free_qty)} EA</td>
+          <td class="num"><strong>+${fmtNum(ln.allocated_recovery_monthly_qty)} EA</strong></td>
+          <td class="num">
+            <strong>${ln.simulated_utilization_pct.toFixed(1)}%</strong>
+            <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${ln.simulated_utilization_pct}%; background:${ln.simulated_utilization_pct >= 98 ? 'var(--danger)' : 'var(--primary)'};"></div></div>
+          </td>
+        </tr>
+      `).join("");
+
+      document.getElementById("sim-masil-tbody").innerHTML = activePlan.masil_sku_impacts.map(ms => {
+        const pillCls = ms.stock_status.includes("품절위험") ? "pill-danger" : (ms.stock_status.includes("안전재고 방어") ? "pill-success" : "pill-warn");
+        return `<tr>
+          <td><strong>${ms.sku_id}</strong><br/><small style="color:var(--muted);">${ms.sku_name}</small></td>
+          <td><code>${ms.po_id}</code></td>
+          <td class="num">${ms.baseline_cover_weeks}주</td>
+          <td class="num"><strong>${ms.projected_cover_weeks_2w}주</strong></td>
+          <td>${ms.po_schedule_action}</td>
+          <td><span class="pill ${pillCls}">${ms.stock_status}</span></td>
+        </tr>`;
+      }).join("");
+
+      const appContainer = document.getElementById("approval-gateways-container");
+      appContainer.innerHTML = Object.entries(st.approvals).map(([k, v]) => {
+        let pillCls = "pill-warn";
+        if (v.status.includes("승인완료")) pillCls = "pill-success";
+        else if (v.status.includes("반려") || v.status.includes("보류")) pillCls = "pill-danger";
+        return `<div class="plan-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <strong style="font-size:13.5px; color:var(--ink);">${v.authority}</strong>
+            <span class="pill ${pillCls}">${v.status}</span>
+          </div>
+          <p style="font-size:12px; color:var(--muted); margin:0 0 8px;"><strong>심의 권한:</strong> ${v.scope}</p>
+          <div class="alert-box alert-warn" style="margin-bottom:10px; font-size:12px;">
+            <strong>결재 의견 (${v.updated_at}):</strong><br/>${v.comment}
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button class="btn-s1" style="padding:5px 10px; font-size:11.5px;" onclick="triggerAction('APPROVE_GATEWAY', {gate:'${k}', decision:'승인완료', comment:'원안 승인 및 즉시 집행 지시'})">승인</button>
+            <button class="btn-s3" style="padding:5px 10px; font-size:11.5px;" onclick="triggerAction('APPROVE_GATEWAY', {gate:'${k}', decision:'조건부보류', comment:'추가 증빙 및 잔여재고 실사 확인 후 재상신 요망'})">보류</button>
+            <button class="btn-reset" style="padding:5px 10px; font-size:11.5px; color:var(--danger);" onclick="triggerAction('APPROVE_GATEWAY', {gate:'${k}', decision:'반려(재조정요구)', comment:'고객 현물 배정 비율 상향 재조정 요구'})">반려</button>
+          </div>
+        </div>`;
+      }).join("");
+
+      document.getElementById("tasks-tbody").innerHTML = st.tasks.map(t => {
+        const pillCls = t.status.includes("완료") || t.status.includes("확정") ? "pill-success" : "pill-warn";
+        return `<tr>
+          <td><code>${t.task_id}</code><br/><small style="color:var(--muted);">${t.created_at}</small></td>
+          <td><strong>${t.dept}</strong></td>
+          <td><small>${t.target_obj}</small></td>
+          <td>${t.title}</td>
+          <td><span class="pill ${pillCls}">${t.status}</span></td>
+        </tr>`;
+      }).join("");
+
+      document.getElementById("audit-logs-tbody").innerHTML = st.audit_logs.map(l => `
+        <tr>
+          <td><small style="color:var(--muted);">${l.timestamp}</small></td>
+          <td><strong>${l.actor}</strong></td>
+          <td>${l.event}</td>
+          <td><small>${l.state_diff}</small></td>
+        </tr>
+      `).join("");
+
+      document.getElementById("lineage-tbody").innerHTML = data.lineage.map(ln => `
+        <tr>
+          <td><code>${ln.file}</code></td>
+          <td>${ln.type}</td>
+          <td class="num">${ln.rows}</td>
+          <td><small><code>${ln.key_cols}</code></small></td>
+          <td>${ln.usage}</td>
+        </tr>
+      `).join("");
+    }
+
+    window.addEventListener("DOMContentLoaded", fetchState);
+  </script>
+</body>
+</html>

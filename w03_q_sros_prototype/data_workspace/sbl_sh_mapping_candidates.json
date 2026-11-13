@@ -1,0 +1,107 @@
+{
+  "customer_id": "C-105",
+  "customer_name": "더뷰티클럽",
+  "confirmed_claims_b2602_01": 5320,
+  "confirmed_claims_b2603_01": 6445,
+  "total_confirmed_claims_qty": 11765,
+  "sbl_recorded_qty": 0,
+  "unmapped_batch_diff_b2602_01": 4885,
+  "unmapped_batch_diff_b2603_01": 6940,
+  "total_unmapped_batch_diff_qty": 11825,
+  "diff_vs_claim_residual_EA": 60,
+  "sh_feb_2026_total_qty": 31867,
+  "sh_mar_2026_total_qty": 22408,
+  "sh_candidate_records": [
+    {
+      "shipment_id": "SH-015131",
+      "order_id": "SO-015198",
+      "ship_date": "2026-02-09",
+      "customer_id": "C-105",
+      "product_id": "PL-02",
+      "shipped_qty": "2494",
+      "revenue_krw": "43183610"
+    },
+    {
+      "shipment_id": "SH-015160",
+      "order_id": "SO-015227",
+      "ship_date": "2026-02-12",
+      "customer_id": "C-105",
+      "product_id": "PL-02",
+      "shipped_qty": "2459",
+      "revenue_krw": "42225948"
+    },
+    {
+      "shipment_id": "SH-015165",
+      "order_id": "SO-015232",
+      "ship_date": "2026-02-13",
+      "customer_id": "C-105",
+      "product_id": "PL-02",
+      "shipped_qty": "5073",
+      "revenue_krw": "87509250"
+    },
+    {
+      "shipment_id": "SH-015170",
+      "order_id": "SO-015237",
+      "ship_date": "2026-02-09",
+      "customer_id": "C-105",
+      "product_id": "PL-02",
+      "shipped_qty": "4923",
+      "revenue_krw": "82297791"
+    },
+    {
+      "shipment_id": "SH-015172",
+      "order_id": "SO-015239",
+      "ship_date": "2026-02-05",
+      "customer_id": "C-105",
+      "product_id": "PL-02",
+      "shipped_qty": "4918",
+      "revenue_krw": "84338782"
+    },
+    {
+      "shipment_id": "SH-015173",
+      "order_id": "SO-015240",
+      "ship_date": "2026-02-16",
+      "customer_id": "C-105",
+      "product_id": "PL-02",
+      "shipped_qty": "4687",
+      "revenue_krw": "81624105"
+    },
+    {
+      "shipment_id": "SH-015192",
+      "order_id": "SO-015259",
+      "ship_date": "2026-02-06",
+      "customer_id": "C-105",
+      "product_id": "PL-02",
+      "shipped_qty": "3411",
+      "revenue_krw": "59689089"
+    },
+    {
+      "shipment_id": "SH-015224",
+      "order_id": "SO-015291",
+      "ship_date": "2026-02-24",
+      "customer_id": "C-105",
+      "product_id": "PL-02",
+      "shipped_qty": "3902",
+      "revenue_krw": "67859682"
+    },
+    {
+      "shipment_id": "SH-015746",
+      "order_id": "SO-015813",
+      "ship_date": "2026-03-18",
+      "customer_id": "C-105",
+      "product_id": "PL-02",
+      "shipped_qty": "2792",
+      "revenue_krw": "47846504"
+    },
+    {
+      "shipment_id": "SH-015771",
+      "order_id": "SO-015838",
+      "ship_date": "2026-03-23",
+      "customer_id": "C-105",
+      "product_id": "PL-02",
+      "shipped_qty": "4832",
+      "revenue_krw": "81694624"
+    }
+  ],
+  "verification_status": "HOLD_PENDING_CONFIRMATION"
+}

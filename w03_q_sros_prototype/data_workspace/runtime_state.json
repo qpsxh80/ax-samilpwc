@@ -1,0 +1,167 @@
+{
+  "scenario_mode": "SCENARIO_1_NORMAL",
+  "scenario_title": "[시연 1: 정상 사례] 정밀 회수 판정(2개 배치) + 다부서 혼합 복구안(Plan C) 의결 및 일정 갱신 완료",
+  "as_of_date": "2026-07-01",
+  "c105_mapping_verified": false,
+  "c103_unsold_audit_qty": 0,
+  "c108_unsold_audit_qty": 0,
+  "c101_force_100_physical": false,
+  "l01_max_limit_qty": 16812,
+  "l03_max_limit_qty": 24420,
+  "masil_demand_surge_pct": 0.0,
+  "batch_claim_adjustments": {
+    "B-02-2602-01": 0,
+    "B-02-2603-01": 0,
+    "B-02-2602-02": 0,
+    "B-02-2602-03": 0
+  },
+  "lot_reinspection_status": "보류(선투입위험)",
+  "injected_claims": [],
+  "batch_statuses": {
+    "B-02-2602-01": "회수실행중(품질위 의결완료)",
+    "B-02-2603-01": "회수실행중(품질위 의결완료)",
+    "B-02-2602-02": "정상출하(동일로트_합격_회수제외)",
+    "B-02-2602-03": "정상출하(동일로트_합격_회수제외)"
+  },
+  "approvals": {
+    "quality_committee": {
+      "authority": "품질위원회",
+      "scope": "B-02-2602-01, B-02-2603-01 배치 회수 실행 의결 (과잉회수 316,277 EA 제외)",
+      "status": "승인완료",
+      "updated_at": "2026-07-01 14:08:14",
+      "comment": "B-02-2602-01(11.87%), B-02-2603-01(11.59%) 2개 배치 표적 회수 의결. 정상 배치 2건(316,277 EA) 및 루머 전면회수 배제 확정."
+    },
+    "sales_executive": {
+      "authority": "영업 임원",
+      "scope": "C-101(매출 30%)·C-102·C-104 복구 일정 및 현물+크레딧 혼합 보상안 승인",
+      "status": "승인완료",
+      "updated_at": "2026-07-01 14:08:14",
+      "comment": "C-101·C-102(65% 현물+35% 크레딧), C-104(60% 현물+40% 크레딧) 10영업일 내 초도 공급 일정 승인."
+    },
+    "scm_production": {
+      "authority": "생산·SCM",
+      "scope": "F1 공장 L-02 여유분(4,873 EA) + L-01 일시 전환(12,000 EA) 및 Masil 안전재고 방어 배정",
+      "status": "승인완료",
+      "updated_at": "2026-07-01 14:08:14",
+      "comment": "F1 L-02 여유(4,873 EA) + L-01 일시 전환(16,812 EA) 배정 완료. Masil 더마 긴급 PO 정상 입고 보호 확정."
+    }
+  },
+  "sim_params": {
+    "selected_plan": "PLAN_C",
+    "physical_replace_ratio": 0.6,
+    "l01_support_qty": 16812,
+    "l03_support_qty": 17500,
+    "include_c105_reserve": true
+  },
+  "ai_rejudgment_report": {
+    "timestamp": "2026-07-01 14:08:14",
+    "trigger_summary": "[시연 1: 정상 사례] 클레임 165건 스캔 + 루머 차단 + Plan C 다부서 승인",
+    "conclusion_status": "결론 변경됨 — 회수 대상 배치 범위 정정 (B-02-2602-01, B-02-2602-03, B-02-2603-01 → B-02-2602-01, B-02-2603-01) 및 전 부서 기록 재조정",
+    "conclusion_changed": true,
+    "before_vs_after": {
+      "recall_batches": {
+        "before": "B-02-2602-01, B-02-2602-03, B-02-2603-01",
+        "after": "B-02-2602-01, B-02-2603-01"
+      },
+      "total_recall_qty": {
+        "before": "53,522 EA",
+        "after": "36,522 EA"
+      },
+      "physical_replace_qty": {
+        "before": "38,216 EA",
+        "after": "21,534 EA"
+      },
+      "line_support": {
+        "before": "L-01: 6,000 / L-03: 24,420 EA",
+        "after": "L-01: 16,812 / L-03: 17,500 EA"
+      },
+      "c101_lead_days": {
+        "before": "12 영업일",
+        "after": "4 영업일"
+      },
+      "masil_stockout_cnt": {
+        "before": "0종",
+        "after": "0종"
+      }
+    },
+    "reasoning_trace": [
+      "[공급 복구 물량 재산출] 총 복구 대상 수량 53,522 EA → 36,522 EA (현물 필요량 38,216 EA → 21,534 EA).",
+      "[다부서 제약 자율 해법] F1 L-02 여유분(4,873 EA) 외에 L-01 전환을 6,000 → 16,812 EA, L-03 전환을 24,420 → 17,500 EA로 자동 재조정하여 C-101 납기(4영업일) 및 Masil 품절 위험(0종)을 방어했습니다."
+    ],
+    "affected_departments": [
+      "품질위원회: 회수 대상 배치 범위 변경에 따른 기존 회수 의결안 정정 재심의 필요",
+      "영업부서(B2B 고객대응): 해당 배치 출하 고객(C-101~C-105) 대상 기존 회수 통보 및 크레딧 정산 원장 취소/수정",
+      "생산·SCM 및 재무회계: 재생산 배정 슬롯(F1 L-01/L-03) 회수 및 매출차감(충당부채) 기표 기록 재확인"
+    ]
+  },
+  "tasks": [
+    {
+      "task_id": "TASK-REV-106",
+      "dept": "품질위·영업·생산·재무 합동",
+      "target_obj": "회수 배치 변경 (B-02-2602-01, B-02-2602-03, B-02-2603-01 → B-02-2602-01, B-02-2603-01)",
+      "title": "[판정정정 후속조치] 배치 회수 판정 변경에 따른 기존 고객 회수안내·생산슬롯·크레딧 원장 일괄 정정",
+      "status": "긴급재확인중",
+      "priority": "CRITICAL",
+      "created_at": "2026-07-01 14:08:14"
+    },
+    {
+      "task_id": "TASK-REC-101",
+      "dept": "생산·물류·영업",
+      "target_obj": "C-101, C-102, C-104 (확정 24,757 EA + C-105 가배정 11,765 EA)",
+      "title": "[실행지시] Plan C 기반 B2B 회수 교체품 출하(21,534 EA) 및 매출채권 크레딧 정산(14,988 EA) 집행",
+      "status": "실행확정(생산배정완료)",
+      "priority": "CRITICAL",
+      "created_at": "2026-07-01 14:08:14"
+    },
+    {
+      "task_id": "TASK-SCM-MS01",
+      "dept": "Masil SCM · Corevia 생산관리",
+      "target_obj": "SPO-0001, SPO-0002, SPO-0004 (더마 세럼·크림·앰플)",
+      "title": "[일정확정] Masil 결품위험 SKU(재고커버 2.21~2.92주) 보호를 위한 L-02 정규 생산슬롯 우선 고정",
+      "status": "보호배정완료",
+      "priority": "HIGH",
+      "created_at": "2026-07-01 14:08:14"
+    },
+    {
+      "task_id": "TASK-QC-001",
+      "dept": "품질보증팀",
+      "target_obj": "LOT-B-2602-P / 101건 미확정 클레임",
+      "title": "예비검사 보류 원료(LOT-B-2602-P) 원인 규명 및 미확정 클레임(101건) 소명 조사",
+      "status": "진행중(회수와 분리)",
+      "priority": "HIGH",
+      "created_at": "2026-07-01 09:00"
+    },
+    {
+      "task_id": "TASK-MAP-C105",
+      "dept": "품질·물류합동",
+      "target_obj": "C-105 (더뷰티클럽) / B-02-2602-01, 2603-01",
+      "title": "C-105 확정 클레임(11,765 EA)의 SBL 출하 누락분(생산차액 11,825 EA) 및 SH 매출원장 대조 요청",
+      "status": "회신대기(가배정 Hold)",
+      "priority": "CRITICAL",
+      "created_at": "2026-07-01 09:05"
+    },
+    {
+      "task_id": "TASK-AUD-C103",
+      "dept": "영업지원팀",
+      "target_obj": "C-103(83,402 EA), C-108(34,929 EA)",
+      "title": "회수 배치 출하 고객 중 클레임 0건 거래처(C-103, C-108) 창고 미판매 잔여재고 실사 요청",
+      "status": "실사요청발송",
+      "priority": "MEDIUM",
+      "created_at": "2026-07-01 09:10"
+    }
+  ],
+  "audit_logs": [
+    {
+      "timestamp": "2026-07-01 14:08:14",
+      "actor": "AI Re-Judgment Engine",
+      "event": "[시연 1: 정상 사례] 클레임 165건 스캔 + 루머 차단 + Plan C 다부서 승인",
+      "state_diff": "배치:[B-02-2602-01, B-02-2602-03, B-02-2603-01→B-02-2602-01, B-02-2603-01], 복구량:[53,522→36,522 EA], 라인지원:[L01 16,812/L03 17,500 EA], C-101납기:[4일]"
+    },
+    {
+      "timestamp": "2026-07-01 09:00:00",
+      "actor": "SYSTEM (AI Engine)",
+      "event": "기준일(2026-07-01) 데이터룸 로드 및 초기 트리아지 완료",
+      "state_diff": "B-02-2602-01(11.87%), B-02-2603-01(11.59%) 회수검토 지정 / B-02-2602-02·03(316,277 EA) 과잉회수 차단"
+    }
+  ]
+}

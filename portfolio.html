@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>화장품 그룹 품질 위기 대응 AI 운영 시스템 (W03 Q-SROS) | Portfolio</title>
+  <style>
+    :root {
+      --bg: #f1f5f9;
+      --surface: #ffffff;
+      --ink: #0f172a;
+      --ink-sub: #334155;
+      --muted: #64748b;
+      --line: #e2e8f0;
+      --line-strong: #cbd5e1;
+      --primary: #1e3a8a;
+      --primary-mid: #2563eb;
+      --primary-light: #eff6ff;
+      --accent: #0f766e;
+      --accent-light: #f0fdfa;
+      --warn: #b45309;
+      --warn-bg: #fffbeb;
+      --danger: #b91c1c;
+      --danger-bg: #fef2f2;
+      --success: #15803d;
+      --success-bg: #f0fdf4;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Pretendard", "Malgun Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
+      font-size: 14px;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Sticky Top Navigation */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(8px);
+      color: #f8fafc;
+      border-bottom: 1px solid #1e293b;
+      padding: 0 28px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .nav-badge {
+      background: var(--primary-mid);
+      color: #fff;
+      font-weight: 800;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 12.5px;
+    }
+    .nav-links a {
+      color: #cbd5e1;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.15s;
+    }
+    .nav-links a:hover {
+      color: #ffffff;
+    }
+    .btn-launch {
+      background: #2563eb;
+      color: #ffffff !important;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-weight: 700;
+      font-size: 12px;
+      border: 1px solid #3b82f6;
+      text-decoration: none;
+    }
+    .btn-launch:hover {
+      background: #1d4ed8;
+    }
+    .btn-print {
+      background: #1e293b;
+      color: #e2e8f0;
+      border: 1px solid #475569;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-print:hover {
+      background: #334155;
+    }
+
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: #ffffff;
+      padding: 48px 28px 42px;
+      border-bottom: 4px solid #2563eb;
+    }
+    .hero-inner {
+      max-width: 1160px;
+      margin: 0 auto;
+    }
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #bfdbfe;
+      margin-bottom: 14px;
+    }
+    .hero h1 {
+      margin: 0 0 12px;
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.25;
+    }
+    .hero p.lead {
+      margin: 0 0 28px;
+      font-size: 15px;
+      color: #e2e8f0;
+      max-width: 920px;
+      line-height: 1.7;
+    }
+    .hero-metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    @media (max-width: 920px) {
+      .hero-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    .hero-metric-card {
+      background: rgba(15, 23, 42, 0.55);
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      border-top: 3px solid #38bdf8;
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .hero-metric-label {
+      font-size: 12px;
+      color: #94a3b8;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .hero-metric-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+    .hero-metric-desc {
+      font-size: 11.5px;
+      color: #cbd5e1;
+    }
+
+    /* Main Container */
+    .container {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 32px 28px 64px;
+    }
+
+    section {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
+    }
+    .sec-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--line);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .sec-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .sec-num {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 800;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 4px;
+    }
+    section h2 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.3px;
+    }
+    section h3 {
+      margin: 24px 0 12px;
+      font-size: 15.5px;
+      font-weight: 800;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    section h3:first-of-type {
+      margin-top: 4px;
+    }
+    .sec-tag {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-light);
+      border: 1px solid #bfdbfe;
+      padding: 3px 10px;
+      border-radius: 4px;
+    }
+
+    /* Grid Cards */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    @media (max-width: 920px) {
+      .grid-3, .grid-2 { grid-template-columns: 1fr; }
+    }
+
+    .info-card {
+      background: #f8fafc;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px 18px;
+    }
+    .info-card.card-danger {
+      background: #fffafa;
+      border-color: #fecaca;
+      border-top: 3px solid var(--danger);
+    }
+    .info-card.card-warn {
+      background: #fffdf5;
+      border-color: #fde68a;
+      border-top: 3px solid var(--warn);
+    }
+    .info-card.card-primary {
+      background: #f8fafc;
+      border-color: #bfdbfe;
+      border-top: 3px solid var(--primary-mid);
+    }
+    .info-card h4 {
+      margin: 0 0 8px;
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .info-card ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--ink-sub);
+      font-size: 13px;
+    }
+    .info-card li {
+      margin-bottom: 6px;
+    }
+    .info-card li:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Architecture ASCII + Visual Box */
+    .arch-box {
+      background: #0f172a;
+      color: #f8fafc;
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin: 12px 0 20px;
+      overflow-x: auto;
+      border: 1px solid #1e293b;
+    }
+    .arch-pre {
+      margin: 0;
+      font-family: "JetBrains Mono", "Malgun Gothic", Consolas, monospace;
+      font-size: 13.5px;
+      line-height: 1.75;
+      color: #e2e8f0;
+      white-space: pre;
+    }
+
+    /* 5-Step Process Cards */
+    .step-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .step-card {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      border: 1px solid var(--line);
+      border-left: 4px solid var(--primary);
+      border-radius: 8px;
+      background: #ffffff;
+      overflow: hidden;
+    }
+    @media (max-width: 768px) {
+      .step-card { grid-template-columns: 1fr; }
+    }
+    .step-head {
+      background: #f8fafc;
+      padding: 14px 16px;
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .step-badge {
+      display: inline-block;
+      width: fit-content;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--primary-mid);
+      background: var(--primary-light);
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 4px;
+    }
+    .step-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--ink);
+    }
+    .step-sub {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .step-body {
+      padding: 14px 18px;
+      font-size: 13px;
+      color: var(--ink-sub);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .step-body ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+    .step-body li {
+      margin-bottom: 4px;
+    }
+    .step-body li:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+      margin-top: 8px;
+    }
+    th, td {
+      padding: 11px 14px;
+      border: 1px solid var(--line);
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      background: #f8fafc;
+      font-weight: 700;
+      color: var(--ink-sub);
+    }
+    td.row-head {
+      font-weight: 700;
+      background: #f8fafc;
+      color: var(--ink);
+      width: 210px;
+    }
+    tr:hover td {
+      background-color: #f8fafc;
+    }
+
+    /* Pills */
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .pill-success { background: var(--success-bg); color: var(--success); border: 1px solid #bbf7d0; }
+    .pill-danger { background: var(--danger-bg); color: var(--danger); border: 1px solid #fecaca; }
+    .pill-warn { background: var(--warn-bg); color: var(--warn); border: 1px solid #fde68a; }
+    .pill-info { background: var(--primary-light); color: var(--primary); border: 1px solid #bfdbfe; }
+
+    code {
+      font-family: "JetBrains Mono", Consolas, monospace;
+      font-size: 12px;
+      background: #f1f5f9;
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: #0f172a;
+      border: 1px solid #e2e8f0;
+    }
+
+    .conclusion-box {
+      background: linear-gradient(135deg, #eff6ff 0%, #f0fdfa 100%);
+      border: 1px solid #bfdbfe;
+      border-left: 5px solid var(--primary);
+      border-radius: 8px;
+      padding: 20px 24px;
+      font-size: 14.5px;
+      color: var(--ink);
+      line-height: 1.75;
+    }
+
+    @media print {
+      .top-nav { display: none; }
+      body { background: #fff; }
+      section { box-shadow: none; page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="nav-brand">
+      <span class="nav-badge">W03 Q-SROS</span>
+      <span>화장품 그룹 품질 위기 대응 AI 운영 시스템</span>
+    </div>
+    <div class="nav-links">
+      <a href="#sec1">1. 개요</a>
+      <a href="#sec2">2. 기업 현황·문제 원인</a>
+      <a href="#sec3">3. 해결 과정</a>
+      <a href="#sec4">4. 결과</a>
+      <a href="#sec5">5. 결론</a>
+      <a href="http://127.0.0.1:8083/" class="btn-launch">▶ 운영 시스템 대시보드 실행화면</a>
+      <button class="btn-print" onclick="window.print()">🖨️ 인쇄 / PDF</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">
+        <span>Aurora Holdings Group</span>
+        <span>·</span>
+        <span>Corevia Cosmetics (제조) ↔ Masil Commerce (유통)</span>
+        <span>·</span>
+        <span>실제 운영 데이터 (2024.01 ~ 2026.06, 30개월)</span>
+      </div>
+      <h1>화장품 그룹 품질 위기 대응 AI 운영 시스템 (W03 Q-SROS)</h1>
+      <p class="lead">
+        본 시스템은 가상 화장품 그룹 <strong>Aurora Holdings</strong>의 품질 위기 상황에서 <strong>과잉 대응을 방지</strong>하고
+        <strong>대응 지연을 해소</strong>하기 위해 개발된 AI 기반 운영 시스템입니다. 제조사 <strong>Corevia Cosmetics</strong>와
+        유통사 <strong>Masil Commerce</strong>의 30개월 실무 원장 데이터(2024.01~2026.06)를 기반으로 작동합니다.
+      </p>
+
+      <div class="hero-metrics">
+        <div class="hero-metric-card">
+          <div class="hero-metric-label">과잉 회수 물량 절감</div>
+          <div class="hero-metric-value">316,277 EA 보호</div>
+          <div class="hero-metric-desc">원료 로트 일괄 폐기 방지 (불량률 0% 정상 배치 2건 보호)</div>
+        </div>
+        <div class="hero-metric-card">
+          <div class="hero-metric-label">회수 대상 정밀 타겟팅</div>
+          <div class="hero-metric-value">2개 배치 (36,522 EA)</div>
+          <div class="hero-metric-desc">전체 로트(62만 EA) 대비 불량률 10% 이상 배치만 선별</div>
+        </div>
+        <div class="hero-metric-card">
+          <div class="hero-metric-label">핵심 고객(C-101) 이탈 방어</div>
+          <div class="hero-metric-value">5영업일 내 복구</div>
+          <div class="hero-metric-desc">매출 비중 30% 1위 고객 수주 급감(-53.0%) 조기 차단</div>
+        </div>
+        <div class="hero-metric-card">
+          <div class="hero-metric-label">계열사 품절 &amp; 데이터 누락 해소</div>
+          <div class="hero-metric-value">품절 0종 · 11,765 EA 복구</div>
+          <div class="hero-metric-desc">Masil 위험 SKU 3종 완전 방어 및 C-105 누락 물량 탐지</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+
+    <!-- 1. 개요 -->
+    <section id="sec1">
+      <div class="sec-header">
+        <div class="sec-title-group">
+          <span class="sec-num">01</span>
+          <h2>개요 (Overview)</h2>
+        </div>
+        <span class="sec-tag">2024.01 ~ 2026.06 (30개월 실무 데이터 기반)</span>
+      </div>
+      <p style="margin:0; font-size:14.5px; color:var(--ink-sub);">
+        본 시스템(<strong>W03 Q-SROS: Quality &amp; Supply Recovery Operations System</strong>)은 가상 화장품 그룹 <strong>Aurora Holdings</strong>의 품질 위기 상황에서
+        미확정 클레임이나 원료 로트 단위의 일괄 리콜로 인한 <strong>과잉 대응을 방지</strong>하고, 수작업 조율로 인한 <strong>대응 지연을 해소</strong>하기 위해 개발된 AI 기반 운영 시스템입니다.
+        제조사 <strong>Corevia Cosmetics</strong>와 유통사 <strong>Masil Commerce</strong>의 실제 운영 데이터(<code>2024.01~2026.06</code>, 30개월간의 원료·배치·클레임·출하·수주·생산능력·재고·발주 원장)를 단일 상태 머신으로 연결하여 작동합니다.
+      </p>
+    </section>
+
+    <!-- 2. 기업 현황 및 문제 원인 -->
+    <section id="sec2">
+      <div class="sec-header">
+        <div class="sec-title-group">
+          <span class="sec-num">02</span>
+          <h2>기업 현황 및 문제 원인</h2>
+        </div>
+        <span class="sec-tag">그룹 구조 및 3대 핵심 위기 요인</span>
+      </div>
+
+      <h3>2-1. 기업 구조</h3>
+      <div class="grid-3" style="margin-bottom:22px;">
+        <div class="info-card card-primary">
+          <h4>Aurora Holdings <span class="pill pill-info">지주·거버넌스</span></h4>
+          <ul>
+            <li>그룹 전략·자금·투자 결정 및 주요 의사결정 승인</li>
+            <li>전결 규정(<code>approval_authority_policy</code>)에 따른 권한 통제</li>
+          </ul>
+        </div>
+        <div class="info-card card-primary">
+          <h4>Corevia Cosmetics <span class="pill pill-info">화장품 제조</span></h4>
+          <ul>
+            <li>화장품 제조(F1·F2 공장), B2B 고객사 및 계열사 공급</li>
+            <li>더마 라인(<code>PL-02</code>) 품질 클레임 판정 및 재생산·보상 수행</li>
+          </ul>
+        </div>
+        <div class="info-card card-primary">
+          <h4>Masil Commerce <span class="pill pill-info">유통 자회사</span></h4>
+          <ul>
+            <li>자사몰·대리점 판매 채널 운영</li>
+            <li>주력 더마 상품(4종 SKU)은 <strong>Corevia 공급에 100% 의존</strong></li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>2-2. 문제 원인</h3>
+      <div class="grid-3">
+        <div class="info-card card-danger">
+          <h4>① 과잉 대응 위험 <span class="pill pill-danger">31.6만 EA 손실 위기</span></h4>
+          <ul>
+            <li>보류 판정 원료(<code>LOT-B-2602-P</code>) 1종이 4개 생산 배치(총 62만 EA)에 투입됨.</li>
+            <li>원료 단위 일괄 회수 시 <strong>정상 배치 316,277 EA까지 불필요하게 폐기</strong>되는 문제 발생.</li>
+            <li>실제 데이터 분석 결과, 4개 배치 중 <strong>2개 배치만 불량률 10% 이상(11.87%, 11.59%)</strong>이며, 나머지 2개 배치는 <strong>불량률 0%</strong>로 확인됨.</li>
+          </ul>
+        </div>
+
+        <div class="info-card card-warn">
+          <h4>② 대응 지연 위험 <span class="pill pill-warn">고객 이탈 · 품절 위기</span></h4>
+          <ul>
+            <li>인과관계 규명 완료를 대기할 경우 회수 결정이 지연되어 고객 이탈이 심화됨.</li>
+            <li>핵심 고객 <strong>C-101(매출 비중 30%)의 최근 3개월 수주가 -53.0% 급감</strong>.</li>
+            <li>계열사 <strong>Masil의 더마 SKU 3종이 안전재고(4주) 미달 상태(2.21~2.92주)</strong>로 품절 위험에 노출됨.</li>
+          </ul>
+        </div>
+
+        <div class="info-card card-danger">
+          <h4>③ 데이터 공백 및 설비 병목 <span class="pill pill-danger">기록 누락 · 포화</span></h4>
+          <ul>
+            <li>품질 출하(<code>SBL</code>)와 매출 출하(<code>SH</code>) 간 <strong>1:1 매핑 부재</strong>(A05 명시).</li>
+            <li><strong>C-105</strong> 고객의 경우 <code>SBL</code> 출하 기록은 <code>0 EA</code>이나 <strong>확정 클레임 11,765 EA</strong>로 기록 누락 확인됨.</li>
+            <li>생산 라인 <code>L-02</code> 가동률이 <strong>97%</strong>로 월 여유 생산능력이 <strong>4,873 EA</strong>에 불과함.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 해결 과정 -->
+    <section id="sec3">
+      <div class="sec-header">
+        <div class="sec-title-group">
+          <span class="sec-num">03</span>
+          <h2>해결 과정 (Solution Architecture &amp; Process)</h2>
+        </div>
+        <span class="sec-tag">판정 · 정합성 검증 · 복구 계획 · HITL 승인 · 재판단</span>
+      </div>
+
+      <h3>3-1. 시스템 구조</h3>
+      <div class="arch-box" style="background:#ffffff; border:1px solid var(--line-strong); padding:20px 18px 16px; box-shadow:0 1px 4px rgba(15,23,42,0.04);">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px; padding:0 6px;">
+          <span style="font-size:12.5px; font-weight:700; color:var(--ink-sub);">W03 Q-SROS End-to-End 아키텍처 및 데이터·의사결정 흐름도</span>
+          <div style="display:flex; gap:14px; font-size:11.5px; font-weight:600; color:var(--ink-sub); flex-wrap:wrap;">
+            <span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:10px; height:10px; border-radius:2px; background:#eff6ff; border:1.5px solid #2563eb; display:inline-block;"></span>AI 판정·정합성 엔진</span>
+            <span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:10px; height:10px; border-radius:2px; background:#fffbeb; border:1.5px solid #d97706; display:inline-block;"></span>사람 의사결정 (HITL)</span>
+            <span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:10px; height:10px; border-radius:2px; background:#f0fdfa; border:1.5px solid #0d9488; display:inline-block;"></span>다부서 공급 복구 계획</span>
+            <span style="display:inline-flex; align-items:center; gap:5px;"><span style="width:10px; height:10px; border-radius:2px; background:#f0fdf4; border:1.5px solid #16a34a; display:inline-block;"></span>도구 실행·상태 갱신</span>
+          </div>
+        </div>
+
+        <svg viewBox="0 0 1080 376" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="시스템 구조 다이어그램" style="display:block; max-width:1080px; margin:0 auto; font-family:'Pretendard','Malgun Gothic',sans-serif;">
+          <defs>
+            <filter id="node-shadow" x="-6%" y="-6%" width="112%" height="116%">
+              <feDropShadow dx="0" dy="2" stdDeviation="2.5" flood-color="#0f172a" flood-opacity="0.07" />
+            </filter>
+            <marker id="arrow-main" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+              <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#334155" />
+            </marker>
+            <marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+              <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#2563eb" />
+            </marker>
+            <marker id="arrow-teal" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto">
+              <path d="M 0 1.5 L 8.5 5 L 0 8.5 z" fill="#0d9488" />
+            </marker>
+          </defs>
+
+          <!-- Zone Highlight Backgrounds -->
+          <!-- Main Horizontal Pipeline Zone -->
+          <rect x="14" y="22" width="1052" height="106" rx="10" fill="#f8fafc" stroke="#e2e8f0" stroke-dasharray="4 4" />
+          <text x="26" y="38" font-size="10.5" font-weight="700" fill="#64748b">MAIN PIPELINE · 품질 판정 → 사람 승인 → 도구 실행</text>
+
+          <!-- Col 2 Vertical Track Zone (Traceability) -->
+          <rect x="191" y="146" width="170" height="218" rx="10" fill="#eff6ff" fill-opacity="0.55" stroke="#bfdbfe" stroke-dasharray="4 4" />
+          <text x="276" y="357" text-anchor="middle" font-size="10.5" font-weight="700" fill="#1e40af">▲ 출하 원장 공백 검증 트랙</text>
+
+          <!-- Col 4 Vertical Track Zone (Supply Recovery) -->
+          <rect x="543" y="146" width="170" height="218" rx="10" fill="#f0fdfa" fill-opacity="0.65" stroke="#99f6e4" stroke-dasharray="4 4" />
+          <text x="628" y="357" text-anchor="middle" font-size="10.5" font-weight="700" fill="#0f766e">▼ 다부서 제약 배분 트랙</text>
+
+          <!-- ==================== ROW 1: MAIN PIPELINE NODES ==================== -->
+          <!-- Node 1: 클레임 접수 -->
+          <g filter="url(#node-shadow)">
+            <rect x="25" y="46" width="150" height="72" rx="8" fill="#ffffff" stroke="#64748b" stroke-width="1.8" />
+            <rect x="25" y="46" width="150" height="20" rx="8" fill="#475569" />
+            <rect x="25" y="58" width="150" height="8" fill="#475569" />
+            <text x="100" y="60" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">INPUT · 데이터 유입</text>
+            <text x="100" y="88" text-anchor="middle" font-size="14" font-weight="800" fill="#0f172a">클레임 접수</text>
+            <text x="100" y="106" text-anchor="middle" font-size="11" fill="#64748b">165건 · 4개 배치(62만EA)</text>
+          </g>
+
+          <!-- Arrow: Col 1 -> Col 2 -->
+          <line x1="175" y1="82" x2="198" y2="82" stroke="#334155" stroke-width="2.2" marker-end="url(#arrow-main)" />
+
+          <!-- Node 2: AI 불량률 계산 -->
+          <g filter="url(#node-shadow)">
+            <rect x="201" y="46" width="150" height="72" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="2" />
+            <rect x="201" y="46" width="150" height="20" rx="8" fill="#2563eb" />
+            <rect x="201" y="58" width="150" height="8" fill="#2563eb" />
+            <text x="276" y="60" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">STEP 1 · AI 판정 엔진</text>
+            <text x="276" y="88" text-anchor="middle" font-size="14" font-weight="800" fill="#1e3a8a">AI 불량률 계산</text>
+            <text x="276" y="106" text-anchor="middle" font-size="11" fill="#475569">확정 클레임 / 배치 수량</text>
+          </g>
+
+          <!-- Arrow: Col 2 -> Col 3 -->
+          <line x1="351" y1="82" x2="374" y2="82" stroke="#334155" stroke-width="2.2" marker-end="url(#arrow-main)" />
+
+          <!-- Node 3: 10% 기준 판정 -->
+          <g filter="url(#node-shadow)">
+            <rect x="377" y="46" width="150" height="72" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="2" />
+            <rect x="377" y="46" width="150" height="20" rx="8" fill="#1d4ed8" />
+            <rect x="377" y="58" width="150" height="8" fill="#1d4ed8" />
+            <text x="452" y="60" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">RULE · 과잉대응 차단</text>
+            <text x="452" y="88" text-anchor="middle" font-size="14" font-weight="800" fill="#1e3a8a">10% 기준 판정</text>
+            <text x="452" y="106" text-anchor="middle" font-size="11" fill="#475569">2개 회수 · 2개 정상(0%)</text>
+          </g>
+
+          <!-- Arrow: Col 3 -> Col 4 -->
+          <line x1="527" y1="82" x2="550" y2="82" stroke="#334155" stroke-width="2.2" marker-end="url(#arrow-main)" />
+
+          <!-- Node 4: 사람 승인 -->
+          <g filter="url(#node-shadow)">
+            <rect x="553" y="46" width="150" height="72" rx="8" fill="#fffbeb" stroke="#d97706" stroke-width="2" />
+            <rect x="553" y="46" width="150" height="20" rx="8" fill="#d97706" />
+            <rect x="553" y="58" width="150" height="8" fill="#d97706" />
+            <text x="628" y="60" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">STEP 4 · HITL 거버넌스</text>
+            <text x="628" y="88" text-anchor="middle" font-size="14" font-weight="800" fill="#92400e">사람 승인</text>
+            <text x="628" y="106" text-anchor="middle" font-size="11" fill="#78350f">품질위 · 영업임원 · SCM</text>
+          </g>
+
+          <!-- Arrow: Col 4 -> Col 5 -->
+          <line x1="703" y1="82" x2="726" y2="82" stroke="#334155" stroke-width="2.2" marker-end="url(#arrow-main)" />
+
+          <!-- Node 5: TASK 생성 -->
+          <g filter="url(#node-shadow)">
+            <rect x="729" y="46" width="150" height="72" rx="8" fill="#ffffff" stroke="#16a34a" stroke-width="1.8" />
+            <rect x="729" y="46" width="150" height="20" rx="8" fill="#16a34a" />
+            <rect x="729" y="58" width="150" height="8" fill="#16a34a" />
+            <text x="804" y="60" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">TOOL · 실행 자동화</text>
+            <text x="804" y="88" text-anchor="middle" font-size="14" font-weight="800" fill="#14532d">TASK 생성</text>
+            <text x="804" y="106" text-anchor="middle" font-size="11" fill="#475569">부서별 후속 작업 티켓</text>
+          </g>
+
+          <!-- Arrow: Col 5 -> Col 6 -->
+          <line x1="879" y1="82" x2="902" y2="82" stroke="#334155" stroke-width="2.2" marker-end="url(#arrow-main)" />
+
+          <!-- Node 6: 상태 갱신 -->
+          <g filter="url(#node-shadow)">
+            <rect x="905" y="46" width="150" height="72" rx="8" fill="#f0fdf4" stroke="#15803d" stroke-width="2" />
+            <rect x="905" y="46" width="150" height="20" rx="8" fill="#15803d" />
+            <rect x="905" y="58" width="150" height="8" fill="#15803d" />
+            <text x="980" y="60" text-anchor="middle" font-size="10" font-weight="700" fill="#ffffff">STATE · 감사 원장</text>
+            <text x="980" y="88" text-anchor="middle" font-size="14" font-weight="800" fill="#14532d">상태 갱신</text>
+            <text x="980" y="106" text-anchor="middle" font-size="11" fill="#166534">배치·일정·로그 영구기록</text>
+          </g>
+
+          <!-- ==================== COL 2 VERTICAL BRANCH (BOTTOM -> UP) ==================== -->
+          <!-- Arrow: Row 2 -> Row 1 (UP into AI 불량률 계산) -->
+          <line x1="276" y1="158" x2="276" y2="121" stroke="#2563eb" stroke-width="2.2" marker-end="url(#arrow-blue)" />
+
+          <!-- Row 2, Col 2: 출하 정합성 검증 -->
+          <g filter="url(#node-shadow)">
+            <rect x="201" y="158" width="150" height="72" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.8" />
+            <rect x="201" y="158" width="150" height="19" rx="8" fill="#3b82f6" />
+            <rect x="201" y="169" width="150" height="8" fill="#3b82f6" />
+            <text x="276" y="171" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">STEP 2 · 원장 교차 대사</text>
+            <text x="276" y="199" text-anchor="middle" font-size="13.5" font-weight="800" fill="#1e3a8a">출하 정합성 검증</text>
+            <text x="276" y="217" text-anchor="middle" font-size="11" fill="#475569">SBL 출하 ↔ 확정 클레임</text>
+          </g>
+
+          <!-- Arrow: Row 3 -> Row 2 (UP into 출하 정합성 검증) -->
+          <line x1="276" y1="268" x2="276" y2="233" stroke="#2563eb" stroke-width="2.2" marker-end="url(#arrow-blue)" />
+
+          <!-- Row 3, Col 2: C-105 공백 탐지 -->
+          <g filter="url(#node-shadow)">
+            <rect x="201" y="268" width="150" height="72" rx="8" fill="#ffffff" stroke="#2563eb" stroke-width="1.8" />
+            <rect x="201" y="268" width="150" height="19" rx="8" fill="#1e40af" />
+            <rect x="201" y="279" width="150" height="8" fill="#1e40af" />
+            <text x="276" y="281" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">GAP DETECT · 누락 복구</text>
+            <text x="276" y="309" text-anchor="middle" font-size="13.5" font-weight="800" fill="#1e3a8a">C-105 공백 탐지</text>
+            <text x="276" y="327" text-anchor="middle" font-size="11" fill="#475569">생산차액 99.5% 일치 입증</text>
+          </g>
+
+          <!-- ==================== COL 4 VERTICAL BRANCH (TOP -> DOWN) ==================== -->
+          <!-- Arrow: Row 1 -> Row 2 (DOWN from 사람 승인) -->
+          <line x1="628" y1="118" x2="628" y2="155" stroke="#0d9488" stroke-width="2.2" marker-end="url(#arrow-teal)" />
+
+          <!-- Row 2, Col 4: 공급 복구 계획 -->
+          <g filter="url(#node-shadow)">
+            <rect x="553" y="158" width="150" height="72" rx="8" fill="#ffffff" stroke="#0d9488" stroke-width="1.8" />
+            <rect x="553" y="158" width="150" height="19" rx="8" fill="#0d9488" />
+            <rect x="553" y="169" width="150" height="8" fill="#0d9488" />
+            <text x="628" y="171" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">STEP 3 · 다부서 시뮬레이션</text>
+            <text x="628" y="199" text-anchor="middle" font-size="13.5" font-weight="800" fill="#115e59">공급 복구 계획</text>
+            <text x="628" y="217" text-anchor="middle" font-size="11" fill="#475569">Plan C 혼합보상·Masil 방어</text>
+          </g>
+
+          <!-- Arrow: Row 2 -> Row 3 (DOWN into L-02 한도 배분) -->
+          <line x1="628" y1="230" x2="628" y2="265" stroke="#0d9488" stroke-width="2.2" marker-end="url(#arrow-teal)" />
+
+          <!-- Row 3, Col 4: L-02 한도 배분 -->
+          <g filter="url(#node-shadow)">
+            <rect x="553" y="268" width="150" height="72" rx="8" fill="#ffffff" stroke="#0d9488" stroke-width="1.8" />
+            <rect x="553" y="268" width="150" height="19" rx="8" fill="#0f766e" />
+            <rect x="553" y="279" width="150" height="8" fill="#0f766e" />
+            <text x="628" y="281" text-anchor="middle" font-size="9.5" font-weight="700" fill="#ffffff">CAPACITY · 설비 병목 해소</text>
+            <text x="628" y="309" text-anchor="middle" font-size="13.5" font-weight="800" fill="#115e59">L-02 한도 배분</text>
+            <text x="628" y="327" text-anchor="middle" font-size="11" fill="#475569">여유 4,873EA + L-01 전환</text>
+          </g>
+        </svg>
+      </div>
+
+      <h3>3-2. 5단계 프로세스</h3>
+      <div class="step-list">
+        <div class="step-card">
+          <div class="step-head">
+            <span class="step-badge">STEP 01</span>
+            <div class="step-title">AI 불량률 계산</div>
+            <div class="step-sub">과잉 대응 방지</div>
+          </div>
+          <div class="step-body">
+            <ul>
+              <li><code>defect_confirmed=True</code>(규격이탈 확정) 클레임만 필터링하여 배치별 불량률 산출</li>
+              <li><strong>계산식</strong>: <code>배치 불량률 = 규격이탈확정 수량 / 배치 수량</code></li>
+              <li><strong>결과</strong>: <code>B-02-2602-01</code>(<strong>11.87%</strong>), <code>B-02-2603-01</code>(<strong>11.59%</strong>) 회수 대상 확정 / 나머지 2개 배치(<strong>0%</strong>) 정상 판정(과잉 회수 차단)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-head">
+            <span class="step-badge">STEP 02</span>
+            <div class="step-title">출하 정합성 검증</div>
+            <div class="step-sub">데이터 공백 탐지</div>
+          </div>
+          <div class="step-body">
+            <ul>
+              <li>품질 출하(<code>SBL</code>) 출하량과 확정 클레임 수량 교차 대조</li>
+              <li><strong>C-105</strong>: <code>SBL 0 EA</code> vs <code>클레임 11,765 EA</code> → <strong>"출하처 확인 필요(Tier 2)"</strong> 상태로 보류 및 예비물량 보호</li>
+              <li>배치 생산량과 SBL 출하 합계의 미매핑 차액(<strong>11,825 EA</strong>)과 클레임(<strong>11,765 EA</strong>)의 <strong>99.5% 일치</strong> 확인 및 재무 출하(<code>SH</code>) 대조로 누락 확정</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-head">
+            <span class="step-badge">STEP 03</span>
+            <div class="step-title">공급 복구 계획</div>
+            <div class="step-sub">다부서 제약 반영</div>
+          </div>
+          <div class="step-body">
+            <ul>
+              <li><code>F1 L-02</code> 라인 월 여유 <strong>4,873 EA</strong> 제약 하 최적 배분 계획 수립</li>
+              <li><strong>C-101</strong>(매출 비중 30%, 최근 수주 -53.0%) 최우선 배분 및 <strong>Masil SKU-1004</strong>(재고 커버 2.21주) 품절 방어 물량 확보</li>
+              <li><strong>Plan C (AI 권장)</strong>: 현물 60%(핵심고객 우대) + 단가 크레딧 40% 혼합 보상 + <code>F1 L-01</code> 여유 라인 일시 전환</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-head">
+            <span class="step-badge">STEP 04</span>
+            <div class="step-title">HITL 승인</div>
+            <div class="step-sub">사람 의사결정</div>
+          </div>
+          <div class="step-body">
+            <ul>
+              <li><strong>품질위원회</strong>: 배치별 공식 회수 의결 승인 / 거절</li>
+              <li><strong>영업임원</strong>: 핵심 고객(<code>C-101</code>) 보상 조건(현물 vs 크레딧 비율) 결정 및 반려 시 100% 현물 재조정</li>
+              <li><strong>생산·SCM</strong>: <code>F1 L-01/L-03</code> 대체 라인 전환 및 계열사 발주(PO) 일정 조정 승인</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step-card">
+          <div class="step-head">
+            <span class="step-badge">STEP 05</span>
+            <div class="step-title">AI 재판단</div>
+            <div class="step-sub">조건 변경 대응</div>
+          </div>
+          <div class="step-body">
+            <ul>
+              <li>클레임 정정 <code>-3,500 EA</code> 입력 시 불량률 <strong>11.59% → 9.41%</strong> 재계산 → 10% 기준 미달로 <strong>회수 대상 자동 해제</strong> 및 기승인 재검토 전환</li>
+              <li>현장 자연어 입력 시 <strong>Gemini API가 조건 파라미터 추출 → 수리 엔진 재실행 → 부서별 공식 문서(의결서·바이어 서한·SCM 협조전) 자동 생성</strong></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h3>3-3. AI · 사람 · 도구의 역할</h3>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:240px;">주체</th>
+            <th>핵심 역할 및 책임</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-head"><strong>AI (Gemini 3.5-flash &amp; 수리 엔진)</strong></td>
+            <td>자연어 지시사항 해석, 배치별 불량률 계산, 출하 누락 이상 탐지(C-105), 다부서 제약 배분 계획 수립, 부서별 공식 문서 생성</td>
+          </tr>
+          <tr>
+            <td class="row-head"><strong>사람 (Human-in-the-Loop)</strong></td>
+            <td>품질위원회 회수 승인/거절, 영업·SCM 예외 조건 판단, 반려 및 최종 의사결정 확정</td>
+          </tr>
+          <tr>
+            <td class="row-head"><strong>도구 (System Tools)</strong></td>
+            <td>부서별 후속 실행 티켓(<code>TASK-*</code>) 생성, 배치·고객·결재 상태 변경, 감사 로그(<code>runtime_state.json</code>) 영구 기록</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 4. 결과 -->
+    <section id="sec4">
+      <div class="sec-header">
+        <div class="sec-title-group">
+          <span class="sec-num">04</span>
+          <h2>결과 및 기대 효과 (Results &amp; Impact)</h2>
+        </div>
+        <span class="sec-tag">정량적·정성적 성과 및 실무 적용 로드맵</span>
+      </div>
+
+      <h3>4-1. 정량적 성과</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>성과 지표</th>
+            <th>개선 전 (기존 수작업·일괄 대응)</th>
+            <th>개선 후 (W03 Q-SROS 적용)</th>
+            <th>개선 효과</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-head">과잉 회수 물량</td>
+            <td><code>316,277 EA</code> 불필요 폐기</td>
+            <td><strong>0 EA</strong> (정상 배치 출하 유지)</td>
+            <td><span class="pill pill-success">316,277 EA 절감 (약 27.2억 원)</span></td>
+          </tr>
+          <tr>
+            <td class="row-head">회수 대상 범위</td>
+            <td>원료 로트 전체 (약 62만 EA)</td>
+            <td><strong>2개 배치 (36,522 EA)</strong></td>
+            <td><span class="pill pill-info">불량률 ≥ 10% 배치 정밀 타겟팅</span></td>
+          </tr>
+          <tr>
+            <td class="row-head">C-101 수주 이탈</td>
+            <td>최근 3개월 수주 <code>-53.0%</code> 급감 지속</td>
+            <td><strong>5영업일 내 초도 복구 완료</strong></td>
+            <td><span class="pill pill-success">매출 30% 1위 고객 이탈 방어</span></td>
+          </tr>
+          <tr>
+            <td class="row-head">Masil 품절 위험</td>
+            <td>주력 더마 SKU <strong>3종</strong> 품절 위기</td>
+            <td><strong>0종</strong> (안전재고 방어)</td>
+            <td><span class="pill pill-success">계열사 유통 결품 완전 방어</span></td>
+          </tr>
+          <tr>
+            <td class="row-head">C-105 기록 누락</td>
+            <td>SBL 0건으로 미탐지 (복구 누락)</td>
+            <td><strong>11,765 EA 탐지 및 원장 매핑</strong></td>
+            <td><span class="pill pill-info">생산차액·SH 대사로 데이터 복구</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>4-2. 정성적 성과</h3>
+      <div class="grid-2" style="margin-bottom:20px;">
+        <div class="info-card">
+          <h4>① 명확한 역할 분리 (AI · 사람 · 도구)</h4>
+          <ul>
+            <li><strong>AI</strong>는 수치 계산·이상 탐지·공식 문서 초안 생성을 담당하고, <strong>사람</strong>은 권한별 승인·예외 판단을 내리며, <strong>도구</strong>는 작업 티켓 발행과 상태 갱신을 자동 집행합니다.</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h4>② Neuro-Symbolic 아키텍처 (할루시네이션 차단)</h4>
+          <ul>
+            <li>불량률·물량 대사·납기 시뮬레이션 등 <strong>모든 수치 계산은 결정론적 수리 엔진</strong>에서 처리하고, <strong>문서 생성만 LLM</strong>으로 분리하여 수치 왜곡(Hallucination)을 원천 차단했습니다.</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h4>③ 무중단 Fallback 이중화 구조</h4>
+          <ul>
+            <li>외부 네트워크 차단이나 LLM API 호출 실패 시에도 <strong>내장 규칙 기반 NLP 엔진으로 즉시 무중단 전환</strong>되어 현장 운영이 멈추지 않도록 설계했습니다.</li>
+          </ul>
+        </div>
+        <div class="info-card">
+          <h4>④ 원본 데이터 100% 보존 및 감사 추적성</h4>
+          <ul>
+            <li>원본 데이터(<code>04_원본데이터</code>)는 <strong>읽기 전용(Read-Only)</strong>으로만 참조하고, 모든 파생 상태와 감사 로그는 별도 <code>data_workspace/</code>에 분리 기록합니다.</li>
+          </ul>
+        </div>
+      </div>
+
+      <h3>4-3. 실무 적용 로드맵</h3>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:220px;">구분 영역</th>
+            <th>현재 구현 (시뮬레이션 프로토타입)</th>
+            <th>향후 엔터프라이즈 실무 적용 방안</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="row-head">데이터 연동</td>
+            <td>원본 CSV / Markdown 파일 읽기 전용 로드</td>
+            <td>제조 <strong>ERP / MES / QMS 운영 DB</strong> 직접 연결</td>
+          </tr>
+          <tr>
+            <td class="row-head">접근 및 권한</td>
+            <td>단일 통합 관제 웹 화면</td>
+            <td>부서·역할별 계정 분리 및 <strong>RBAC 권한 부여</strong></td>
+          </tr>
+          <tr>
+            <td class="row-head">결재 프로세스</td>
+            <td>대시보드 내 HITL 게이트웨이 버튼 승인</td>
+            <td>전사 <strong>전자결재 시스템(SAP / 더존 그룹웨어)</strong> API 연동</td>
+          </tr>
+          <tr>
+            <td class="row-head">이벤트 처리</td>
+            <td>파일·트랜잭션 기반 상태 처리</td>
+            <td><strong>Kafka / WebSocket</strong> 기반 실시간 클레임·설비 스트리밍</td>
+          </tr>
+          <tr>
+            <td class="row-head">판정 고도화</td>
+            <td>10% 임계치 및 물량 보존 수리 규칙 엔진</td>
+            <td>과거 클레임 패턴 학습 기반 <strong>조기 경보 ML 모델</strong> 결합</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- 5. 결론 -->
+    <section id="sec5">
+      <div class="sec-header">
+        <div class="sec-title-group">
+          <span class="sec-num">05</span>
+          <h2>결론 (Conclusion)</h2>
+        </div>
+        <span class="sec-tag">AI 판단 · 사람 승인 · 도구 실행의 완결된 운영 체계</span>
+      </div>
+      <div class="conclusion-box">
+        본 시스템(<strong>W03 Q-SROS</strong>)은 화장품 그룹의 복합 품질 위기 상황에서 <strong>AI가 정밀하게 판단</strong>하고,
+        <strong>사람이 최종 승인</strong>하며, <strong>도구가 실제 후속 작업과 상태를 처리</strong>하는 엔드투엔드 운영 체계를 구현하였습니다.
+        이를 통해 원료 로트 일괄 회수로 인한 <strong>31만 EA 규모의 과잉 대응 손실을 방지</strong>하고, 데이터 공백(<code>C-105</code> 출하 누락)을
+        물량 보존 법칙으로 복구함과 동시에 <strong>핵심 고객(<code>C-101</code>) 이탈 및 계열사(<code>Masil</code>) 품절 위험을 동시에 해소</strong>할 수 있음을 실증하였습니다.
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>
